@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar";
+import Header from "./components/Header"; // <-- use the new responsive header
 import Container from "./components/Container";
 import Background from "./components/Background";
 
@@ -13,9 +13,10 @@ export default function App() {
     <div className="min-h-screen bg-gradient-to-b from-indigo-50/60 to-white dark:from-neutral-950 dark:to-neutral-950 text-neutral-900 dark:text-neutral-100">
       <Background />
 
-      <Navbar />
+      <Header />
 
-      <main>
+      {/* offset for sticky header height */}
+      <main className="pt-14">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/education" element={<Education />} />
