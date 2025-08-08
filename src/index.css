@@ -1,3 +1,6 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* src/index.css */
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/* optional: set your default font via CSS variable */
+:root { --font-sans: "Inter", ui-sans-serif, system-ui; }
