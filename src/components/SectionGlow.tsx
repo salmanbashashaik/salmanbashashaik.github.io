@@ -1,4 +1,3 @@
-import React from "react";
 
 /** Radial glow that sits behind a section’s content */
 export default function SectionGlow() {

@@ -1,15 +1,14 @@
-import React from "react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
+import { HashRouter } from "react-router-dom"; // use hash while we debug
 import App from "./App";
 import "./index.css";
-import { HashRouter } from "react-router-dom";
-createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <BrowserRouter>
-    <HashRouter>
-      <App />
-      </HashRouter>
-  </BrowserRouter  >
-  </React.StrictMode>
+
+const root = document.getElementById("root");
+if (!root) {
+  throw new Error("Missing #root element");
+}
+createRoot(root).render(
+  <HashRouter>
+    <App />
+  </HashRouter>
 );

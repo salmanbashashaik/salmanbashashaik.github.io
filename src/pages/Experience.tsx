@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Container from "../components/Container";
 import SectionGlow from "../components/SectionGlow";
 import Card from "../components/Card";
+import { motion, type Variants } from "framer-motion";
 import {
   Building2,
   CalendarDays,
@@ -11,7 +12,6 @@ import {
   Zap,
   Boxes,
 } from "lucide-react";
-import { motion } from "framer-motion";
 
 /* ---------- data ---------- */
 type Exp = {
@@ -25,12 +25,22 @@ type Exp = {
   details: string[];
 };
 
+// const fadeUp = {
+//   hidden: { opacity: 0, y: 12 },
+//   show: (i = 0) => ({
+//     opacity: 1,
+//     y: 0,
+//     transition: { duration: 0.35, ease: "easeOut", delay: i * 0.06 },
+//   }),
+// } satisfies Variants;
+
 const EXP: Exp[] = [
   {
     role: "Data Engineer Intern — Bioinformatics",
     company: "Agriculture and Agri-Food Canada (AAFC)",
     period: "Jan 2025 – Present",
-    oneLiner: "Built fast, searchable data plumbing for multi-TB genomics and research metadata.",
+    oneLiner:
+      "Built fast, searchable data plumbing for multi-TB genomics and research metadata.",
     kpis: [
       { icon: "zap", label: "23× faster ingest" },
       { icon: "gauge", label: "260 files/sec" },
@@ -129,7 +139,7 @@ const cardVariants = {
     y: 0,
     transition: { duration: 0.5, ease: "easeOut", delay: i * 0.06 },
   }),
-};
+} satisfies Variants;
 
 const glowHover = {
   rest: { scale: 1, boxShadow: "0 0 0 0 rgba(0,0,0,0)" },

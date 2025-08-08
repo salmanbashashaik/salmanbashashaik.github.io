@@ -7,7 +7,6 @@ import Home from "./pages/Home";
 import Education from "./pages/Education";
 import Experience from "./pages/Experience";
 import Projects from "./pages/Projects";
-import Contact from "./pages/Contact";
 
 export default function App() {
   return (

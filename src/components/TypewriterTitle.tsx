@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 /** Typewriter that cycles through items */
 export default function TypewriterTitle({
@@ -44,7 +44,9 @@ export default function TypewriterTitle({
       }
     }
 
-    return () => t && clearTimeout(t);
+    return () => {
+      if (t) clearTimeout(t);
+    };
   }, [text, phase, target, typeSpeed, eraseSpeed, holdTime, gapTime]);
 
   return (

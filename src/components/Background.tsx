@@ -1,4 +1,3 @@
-import React from "react";
 
 /** Global subtle grid background for all pages */
 export default function Background() {
