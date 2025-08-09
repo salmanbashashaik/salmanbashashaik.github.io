@@ -50,7 +50,8 @@ const projects: Project[] = [
       "Packaged the solution with a simple CLI for fast batch classification."
     ],
     tags: ["Python", "naive bayes", "NLP", "TF-IDF", "Text Classification"],
-    skills: ["Jupyter NoteBooks", "Data Transfomration", "Data Preprocessing", "Evaluation"]
+    skills: ["Jupyter NoteBooks", "Data Transfomration", "Data Preprocessing", "Evaluation"],
+    link: "https://github.com/salmanbashashaik/Language-Detection"
   },
   {
     name: "Science Data Inventory (AAFC)",
