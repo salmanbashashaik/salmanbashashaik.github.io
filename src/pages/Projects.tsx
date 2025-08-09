@@ -170,7 +170,7 @@ export default function SkillsProjects() {
                     rel="noreferrer"
                     className="text-indigo-500 hover:underline"
                   >
-                    HackerRank Problem Solving (Intermediate)
+                    HackerRank SQL (Advanced)
                   </a>
                 </li>
                 <li>
