@@ -7,7 +7,7 @@ const profile = {
   tagline: "Data & Software Engineering · CS (Honours) @ University Of New Brunswick",
   summary:
     "Experienced Data and Software Engineer graduating with a first class honors in May 2026. Skilled in designing and optimizing data pipelines. Brings hands-on experience developing ETL processes and building applications integrated with enterprise systems like SAP. Proficient in Java, Python, SQL, Docker, and BI tools including Power BI and Tableau",
-  location: "Fredericton, New Brunswick, Canada",
+  location: "New Brunswick, Canada",
   availability: "New-grad roles (2026)",
   email: "salmanbasha.shaik@unb.ca",
   linkedin: "https://www.linkedin.com/in/salman-shaik-798727225",
