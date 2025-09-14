@@ -119,12 +119,12 @@ export default function Education() {
             <p className="text-neutral-700 dark:text-neutral-300">
               <strong>Supervisor:</strong>{" "}
               <a
-                href="https://www.cs.unb.ca/~pochec/"
+                href="https://www.cs.unb.ca/~hcao3/"
                 target="_blank"
                 rel="noreferrer"
                 className="text-indigo-600 hover:underline"
               >
-                Pochec Przemysław
+                Dr. Hung Cao
               </a>
             </p>
           </div>
