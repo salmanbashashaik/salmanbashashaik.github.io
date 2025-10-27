@@ -1,7 +1,7 @@
 import Container from "../components/Container";
 import Card from "../components/Card";
 import SectionGlow from "../components/SectionGlow";
-import { GraduationCap, BookOpen, FlaskConical, FileText } from "lucide-react";
+import { GraduationCap, BookOpen, FlaskConical } from "lucide-react";
 
 const courses = [
   "Database Administrators",
