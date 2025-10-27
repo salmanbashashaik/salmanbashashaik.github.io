@@ -133,17 +133,15 @@ export default function Education() {
             </p>
             
             {/* Read my proposal */}
-            <div className="pt-2">
-                <a
-                  href="/proposal.pdf"        
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-2 rounded-md border border-indigo-600 px-3 py-2 text-sm font-medium text-indigo-600 hover:bg-indigo-600/10"
-                >
-                  <FileText className="h-4 w-4" />
-                  Read my proposal (PDF)
-                </a>
-              </div>
+            <div className="relative mt-8 flex flex-wrap items-center gap-3">
+              <a
+                href="/proposal.pdf"
+                download="Shaik_Salman_Basha_Proposal.pdf"
+                className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 text-white px-4 py-2 text-sm hover:bg-indigo-700"
+              >
+                Read My Proposal (PDF)
+              </a>
+            </div>
 
           </div>
         </Card>
