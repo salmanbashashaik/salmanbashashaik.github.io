@@ -140,7 +140,7 @@ export default function Education() {
                 download="Shaik_Salman_Basha_Proposal.pdf"
                 className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 text-white px-4 py-2 text-sm hover:bg-indigo-700"
               >
-                Read My Proposal (PDF)
+                 Read My Proposal (PDF)
               </a>
             </div>
 
