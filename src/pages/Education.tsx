@@ -1,7 +1,7 @@
 import Container from "../components/Container";
 import Card from "../components/Card";
 import SectionGlow from "../components/SectionGlow";
-import { GraduationCap, BookOpen, FlaskConical } from "lucide-react";
+import { GraduationCap, BookOpen, FlaskConical, FileText } from "lucide-react";
 
 const courses = [
   "Database Administrators",
@@ -78,20 +78,19 @@ export default function Education() {
           <div className="p-5 space-y-3 text-sm leading-6">
             <p className="font-medium">
               <span className="text-indigo-600">Working title:</span>{" "}
-              Generating Synthetic Early-Stage Hepatoblastoma Images with Generative AI
+              Few-Shot/Zero-Shot Cross-Domain Image Generation for Data-Scarce Domains: A Medical Imaging Case Study on Diffuse Glioma
             </p>
 
             <p className="text-neutral-700 dark:text-neutral-300">
-              Exploratory project to generate plausible early-stage Hepatoblastoma (a rare pediatric liver cancer) imagery (e.g., low-signal
-              radiology or histopathology patches) using GANs and latent diffusion models.
-              The intent is to produce controlled synthetic samples that can help with cancer detection, dataset
-              balance, pretraining, and sensitivity studies—not to replace real clinical data. Supports my
-              long-term goal of applying AI in the medical field.
+            This exploratory project investigates whether generative AI models can synthesize realistic and anatomically coherent diffuse glioma MRI images using knowledge transferred from a data-rich glioblastoma source domain. 
+            By leveraging Conditional GANs (cGANs) and Latent Diffusion Models (LDMs), 
+            the study explores how generative transfer can overcome data scarcity and imbalance in rare pediatric brain tumors.
+            Rather than replacing clinical data, the aim is to generate controlled, domain-faithful synthetic images that can support dataset balancing, model pretraining, and sensitivity analyses for early tumor detection and segmentation tasks.
             </p>
 
             <ul className="list-disc pl-5 space-y-1">
               <li>
-                <strong>Data:</strong> Public research archives such as{" "}
+                <strong>Data:</strong> Publicly available MRI datasets from {" "}
                 <a
                   href="https://www.cancerimagingarchive.net/browse-collections/"
                   target="_blank"
@@ -99,13 +98,18 @@ export default function Education() {
                   className="text-indigo-600 hover:underline"
                 >
                   The Cancer Imaging Archive (TCIA)
-                </a>, focusing on relevant MRI/CT series.
+                </a> - specifically, the glioblastoma multiforme (GBM) dataset as the source domain and the diffuse glioma dataset as the target domain - comprising T1, T2, and FLAIR modalities.
               </li>
               <li>
-                <strong>Methods:</strong> Compare StyleGAN-style models and latent-diffusion pipelines; test conditioning on metadata when available.
+                <strong>Methods:</strong> 
+                  Compare Conditional GANs and other Gen AI pipelines for image fidelity and structural realism.
+                  Explore few-shot and zero-shot scenarios to evaluate generative adaptability under extreme data scarcity.
+                  Integrate GLIP-based semantic conditioning, enabling zero-shot alignment between source and target MRI domains using text–image embeddings.
               </li>
               <li>
-                <strong>Evaluation:</strong> FID/KID scores, precision–recall for diversity, and limited blinded human review.
+                <strong>Evaluation:</strong> Assess synthetic data quality using Fréchet Inception Distance (FID), Kernel Inception Distance (KID), 
+                and precision–recall metrics for diversity.
+                Further evaluate functional utility through a CNN-based tumor classifier, measuring improvements in classification accuracy when augmented with synthetic images.
               </li>
               <li>
                 <strong>Ethics:</strong> Follow dataset licenses, watermark outputs, avoid PHI, and keep results for research only.
@@ -113,7 +117,7 @@ export default function Education() {
             </ul>
 
             <p className="text-neutral-700 dark:text-neutral-300">
-              <strong>Status:</strong> Literature review and dataset scouting in progress.
+              <strong>Status:</strong> Dataset pre-processing, and baseline GAN training are in progress.
             </p>
 
             <p className="text-neutral-700 dark:text-neutral-300">
@@ -127,6 +131,20 @@ export default function Education() {
                 Dr. Hung Cao
               </a>
             </p>
+            
+            {/* Read my proposal */}
+            <div className="pt-2">
+                <a
+                  href="/proposal.pdf"        
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-2 rounded-md border border-indigo-600 px-3 py-2 text-sm font-medium text-indigo-600 hover:bg-indigo-600/10"
+                >
+                  <FileText className="h-4 w-4" />
+                  Read my proposal (PDF)
+                </a>
+              </div>
+
           </div>
         </Card>
       </div>
