@@ -11,6 +11,7 @@ const courses = [
   "Machine Learning",
   "Natural Language Processing",
 ];
+const proposalHref = `${import.meta.env.BASE_URL}proposal.pdf`;
 
 export default function Education() {
   return (
@@ -135,7 +136,7 @@ export default function Education() {
             {/* Read my proposal */}
             <div className="relative mt-8 flex flex-wrap items-center gap-3">
               <a
-                href="/proposal.pdf"
+                href={proposalHref}
                 download="Shaik_Salman_Basha_Proposal.pdf"
                 className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 text-white px-4 py-2 text-sm hover:bg-indigo-700"
               >
