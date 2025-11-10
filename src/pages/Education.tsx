@@ -124,7 +124,7 @@ export default function Education() {
             <p className="text-neutral-700 dark:text-neutral-300">
               <strong>Supervisor:</strong>{" "}
               <a
-                href="https://www.cs.unb.ca/~hcao3/"
+                href="https://www.hungcao.me/"
                 target="_blank"
                 rel="noreferrer"
                 className="text-indigo-600 hover:underline"
