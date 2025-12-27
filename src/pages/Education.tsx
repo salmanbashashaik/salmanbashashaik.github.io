@@ -44,7 +44,7 @@ export default function Education() {
           </p>
         </div>
         <div className="mt-2 sm:mt-0 text-sm text-neutral-400">
-          Apr 2026 (GPA 3.7)
+          Apr 2026 (GPA 3.8)
         </div>
       </div>
 
