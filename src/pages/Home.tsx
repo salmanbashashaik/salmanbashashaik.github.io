@@ -34,9 +34,9 @@ export default function Home() {
           <span className="inline-flex items-center gap-2 rounded-full border border-neutral-300/70 dark:border-neutral-700 px-3 py-1 text-xs md:text-sm">
             <MapPin className="h-4 w-4" /> {profile.location}
           </span>
-          {/* <span className="inline-flex items-center gap-2 rounded-full border border-neutral-300/70 dark:border-neutral-700 px-3 py-1 text-xs md:text-sm">
+          <span className="inline-flex items-center gap-2 rounded-full border border-neutral-300/70 dark:border-neutral-700 px-3 py-1 text-xs md:text-sm">
             <Calendar className="h-4 w-4" /> {profile.availability}
-          </span> */}
+          </span>
         </div>
 
         <div className="relative mt-8 flex flex-wrap items-center gap-3">
