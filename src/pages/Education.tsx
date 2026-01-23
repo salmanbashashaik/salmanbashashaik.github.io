@@ -7,9 +7,10 @@ const courses = [
   "Database Administrators",
   "Software Engineering",
   "Big Data Systems",
-  "Artificial Intelligence",
+  "Data Science for Big Data Analytics",
   "Machine Learning",
   "Natural Language Processing",
+  "Data Mining",
 ];
 const proposalHref = `${import.meta.env.BASE_URL}proposal.pdf`;
 
