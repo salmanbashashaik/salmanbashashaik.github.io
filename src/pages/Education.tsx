@@ -12,8 +12,7 @@ const courses = [
   "Natural Language Processing",
   "Data Mining",
 ];
-const paperHref = `${import.meta.env.BASE_URL}paper.pdf`;
-
+const paperHref = `${import.meta.env.BASE_URL}ALDM-Salman-paper.pdf`;
 export default function Education() {
   return (
     <Container>
