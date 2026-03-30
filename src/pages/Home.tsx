@@ -41,7 +41,7 @@ export default function Home() {
 
         <div className="relative mt-8 flex flex-wrap items-center gap-3">
           <a
-            href="/CV-CW.pdf"
+            href="/resume-g.pdf"
             download="Shaik_Salman_Basha_Resume.pdf"
             className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 text-white px-4 py-2 text-sm hover:bg-indigo-700"
           >
