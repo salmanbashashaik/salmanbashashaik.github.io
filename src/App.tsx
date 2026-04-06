@@ -1,39 +1,57 @@
-import { Routes, Route } from "react-router-dom";
-import Header from "./components/Header"; // <-- use the new responsive header
+import { ThemeProvider } from "./theme";
+import Header from "./components/Header";
+import ParticleField from "./components/ParticleField";
+import CursorGlow from "./components/CursorGlow";
+import SystemPanel from "./components/SystemPanel";
+import Hero from "./components/Hero";
+import PipelineViz from "./components/PipelineViz";
+import SystemStatus from "./components/SystemStatus";
+import EducationSection from "./components/EducationSection";
+import ExperienceSection from "./components/ExperienceSection";
+import ProjectsSection from "./components/ProjectsSection";
+import SkillsSection from "./components/SkillsSection";
+import ContactSection from "./components/ContactSection";
 import Container from "./components/Container";
-import Background from "./components/Background";
-
-import Home from "./pages/Home";
-import Education from "./pages/Education";
-import Experience from "./pages/Experience";
-import Projects from "./pages/Projects";
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-indigo-50/60 to-white dark:from-neutral-950 dark:to-neutral-950 text-neutral-900 dark:text-neutral-100">
-      <Background />
+    <ThemeProvider>
+      <div className="noise min-h-screen" style={{ background: "var(--bg)", color: "var(--text)" }}>
+        <ParticleField />
+        <CursorGlow />
+        <Header />
+        <SystemPanel />
 
-      <Header />
+        <main>
+          <Hero />
+          <PipelineViz />
 
-      {/* offset for sticky header height */}
-      <main className="pt-14">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/education" element={<Education />} />
-          <Route path="/experience" element={<Experience />} />
-          <Route path="/projects" element={<Projects />} />
-          {/* <Route path="/contact" element={<Contact />} /> */}
-        </Routes>
-      </main>
+          <Container>
+            <SystemStatus />
+          </Container>
 
-      <footer className="border-t border-neutral-200/70 dark:border-neutral-800 mt-16">
-        <Container>
-          <div className="py-8 text-sm flex flex-col md:flex-row items-center justify-between gap-4">
-            <span>© {new Date().getFullYear()} Shaik Salman Basha</span>
-            <div className="text-neutral-500 dark:text-neutral-400">Built with React + Tailwind</div>
-          </div>
-        </Container>
-      </footer>
-    </div>
+          <div className="divider my-20 mx-4 md:mx-8" />
+          <EducationSection />
+
+          <div className="divider mx-4 md:mx-8" />
+          <ExperienceSection />
+
+          <div className="divider mx-4 md:mx-8" />
+          <ProjectsSection />
+
+          <div className="divider mx-4 md:mx-8" />
+          <SkillsSection />
+
+          <div className="divider mx-4 md:mx-8" />
+          <ContactSection />
+        </main>
+
+        <footer className="py-10 text-center" style={{ borderTop: "1px solid var(--border)" }}>
+          <p className="text-[12px]" style={{ fontFamily: "var(--font-mono)", color: "var(--text-3)" }}>
+            © {new Date().getFullYear()} Shaik Salman Basha
+          </p>
+        </footer>
+      </div>
+    </ThemeProvider>
   );
 }
