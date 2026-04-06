@@ -1,10 +1,11 @@
-import { useState, useRef } from "react";
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import SectionHeader from "./SectionHeader";
 
 const EXP = [
   {
+    id: 0,
     role: "Data Engineer Intern — Bioinformatics",
     company: "Agriculture & Agri-Food Canada (AAFC)",
     period: "Jan 2025 – Present",
@@ -22,6 +23,7 @@ const EXP = [
     ],
   },
   {
+    id: 1,
     role: "Software Engineer Intern",
     company: "New Brunswick Power Corporation",
     period: "Sep 2023 – Apr 2024",
@@ -39,129 +41,191 @@ const EXP = [
   },
 ];
 
-function ExpandableDetails({ details, open }: { details: string[]; open: boolean }) {
-  const ref = useRef<HTMLDivElement>(null);
-  return (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateRows: open ? "1fr" : "0fr",
-        transition: "grid-template-rows 0.35s cubic-bezier(0.22,1,0.36,1)",
-      }}
-    >
-      <div style={{ overflow: "hidden" }}>
-        <div
-          ref={ref}
-          className="pt-4 pb-1"
-          style={{ borderTop: "1px solid var(--border)", marginTop: "16px" }}
-        >
-          <ul className="space-y-2.5">
-            {details.map((d, i) => (
-              <li key={i} className="flex gap-3 text-[13px] leading-relaxed" style={{ color: "var(--text-2)" }}>
-                <span className="mt-[7px] h-1 w-1 rounded-full flex-shrink-0" style={{ background: "var(--accent)" }} />
-                {d}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export default function ExperienceSection() {
-  const [open, setOpen] = useState<number | null>(null);
+  const [activeId, setActiveId] = useState<number | null>(null);
+
+  const toggle = (id: number) => setActiveId((prev) => (prev === id ? null : id));
 
   return (
     <section id="experience" className="py-24 px-4">
       <div className="mx-auto max-w-5xl">
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+        >
           <SectionHeader label="// work history" title="Experience" />
         </motion.div>
 
         <div className="relative">
+          {/* Timeline spine */}
           <div
             className="absolute left-[7px] top-2 bottom-2 w-px"
-            style={{ background: "linear-gradient(to bottom, var(--accent), color-mix(in srgb, var(--accent) 10%, transparent))" }}
+            style={{
+              background:
+                "linear-gradient(to bottom, var(--accent), color-mix(in srgb, var(--accent) 10%, transparent))",
+            }}
           />
 
           <div className="space-y-5 pl-8">
             {EXP.map((e, i) => {
-              const isOpen = open === i;
+              const isOpen = activeId === e.id;
+
               return (
                 <motion.div
-                  key={i}
+                  key={e.id}
                   initial={{ opacity: 0, x: -16 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true, amount: 0.1 }}
                   transition={{ delay: i * 0.08, duration: 0.5 }}
                   className="relative"
                 >
+                  {/* Timeline dot */}
                   <motion.div
                     whileInView={{ scale: [0.4, 1.2, 1] }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.4, delay: i * 0.08 }}
                     className="absolute -left-8 top-5 h-3.5 w-3.5 rounded-full border-2"
-                    style={{ background: "var(--bg)", borderColor: "var(--accent)", boxShadow: "0 0 0 4px var(--accent-subtle)" }}
+                    style={{
+                      background: isOpen ? "var(--accent)" : "var(--bg)",
+                      borderColor: "var(--accent)",
+                      boxShadow: isOpen
+                        ? "0 0 0 4px var(--accent-subtle), 0 0 12px var(--accent-glow)"
+                        : "0 0 0 4px var(--accent-subtle)",
+                      transition: "background 0.25s, box-shadow 0.25s",
+                    }}
                   />
 
+                  {/* Clickable card */}
                   <div
-                    className="surface rounded-2xl p-5 md:p-6 grad-border transition-colors duration-300"
-                    style={{ borderColor: isOpen ? "color-mix(in srgb, var(--accent) 25%, transparent)" : undefined }}
+                    onClick={() => toggle(e.id)}
+                    className="rounded-2xl cursor-pointer transition-all duration-250 select-none"
+                    style={{
+                      background: isOpen
+                        ? "color-mix(in srgb, var(--accent) 6%, var(--surface))"
+                        : "var(--surface)",
+                      border: isOpen
+                        ? "1px solid color-mix(in srgb, var(--accent) 35%, transparent)"
+                        : "1px solid var(--border)",
+                      boxShadow: isOpen ? "0 4px 24px color-mix(in srgb, var(--accent) 8%, transparent)" : "none",
+                    }}
                   >
-                    {/* Header */}
-                    <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
-                      <div>
-                        <h3 className="text-[16px] font-bold leading-snug" style={{ fontFamily: "var(--font-heading)", color: "var(--text)" }}>
-                          {e.role}
-                        </h3>
-                        <p className="text-[13px] mt-0.5" style={{ color: "var(--text-2)" }}>{e.company}</p>
+                    {/* Always-visible header */}
+                    <div className="p-5 md:p-6">
+                      <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
+                        <div>
+                          <h3
+                            className="text-[16px] font-bold leading-snug"
+                            style={{ fontFamily: "var(--font-heading)", color: "var(--text)" }}
+                          >
+                            {e.role}
+                          </h3>
+                          <p className="text-[13px] mt-0.5" style={{ color: "var(--text-2)" }}>
+                            {e.company}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <span
+                            className="text-[11px] px-2.5 py-1 rounded-full font-mono"
+                            style={{
+                              background: "var(--accent-subtle)",
+                              color: "var(--accent-2)",
+                              border: "1px solid color-mix(in srgb, var(--accent) 20%, transparent)",
+                            }}
+                          >
+                            {e.period}
+                          </span>
+                          <ChevronDown
+                            size={14}
+                            style={{
+                              color: "var(--accent)",
+                              transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
+                              transition: "transform 0.25s ease",
+                            }}
+                          />
+                        </div>
                       </div>
-                      <span
-                        className="text-[11px] px-2.5 py-1 rounded-full font-mono shrink-0"
-                        style={{ background: "var(--accent-subtle)", color: "var(--accent-2)", border: "1px solid color-mix(in srgb, var(--accent) 20%, transparent)" }}
+
+                      {/* KPIs */}
+                      <div className="flex flex-wrap gap-2 mb-3">
+                        {e.kpis.map((k) => (
+                          <span
+                            key={k}
+                            className="text-[11px] px-2.5 py-1 rounded-full font-medium"
+                            style={{
+                              background: "var(--accent-subtle)",
+                              color: "var(--accent-2)",
+                              border: "1px solid color-mix(in srgb, var(--accent) 15%, transparent)",
+                            }}
+                          >
+                            {k}
+                          </span>
+                        ))}
+                      </div>
+
+                      {/* Case study — always visible */}
+                      <div className="space-y-1.5 mb-3">
+                        {[
+                          { label: "Problem", text: e.problem },
+                          { label: "Approach", text: e.approach },
+                          { label: "Impact", text: e.impact },
+                        ].map(({ label, text }) => (
+                          <p
+                            key={label}
+                            className="text-[13px] leading-relaxed"
+                            style={{ color: "var(--text-2)" }}
+                          >
+                            <span
+                              className="font-semibold"
+                              style={{ color: "var(--accent-2)" }}
+                            >
+                              {label}:{" "}
+                            </span>
+                            {text}
+                          </p>
+                        ))}
+                      </div>
+
+                      {/* Stack — inline */}
+                      <p
+                        className="text-[12px]"
+                        style={{ color: "var(--text-3)", fontFamily: "var(--font-mono)" }}
                       >
-                        {e.period}
-                      </span>
+                        {e.stack.join(" · ")}
+                      </p>
                     </div>
 
-                    {/* KPIs */}
-                    <div className="flex flex-wrap gap-2 mb-3">
-                      {e.kpis.map((k) => (
-                        <span key={k} className="text-[11px] px-2.5 py-1 rounded-full font-medium"
-                          style={{ background: "var(--accent-subtle)", color: "var(--accent-2)", border: "1px solid color-mix(in srgb, var(--accent) 15%, transparent)" }}>
-                          {k}
-                        </span>
-                      ))}
-                    </div>
-
-                    {/* Case study */}
-                    <div className="space-y-1.5 mb-3">
-                      {[{ label: "Problem", text: e.problem }, { label: "Approach", text: e.approach }, { label: "Impact", text: e.impact }].map(({ label, text }) => (
-                        <p key={label} className="text-[13px] leading-relaxed" style={{ color: "var(--text-2)" }}>
-                          <span className="font-semibold" style={{ color: "var(--accent-2)" }}>{label}: </span>{text}
-                        </p>
-                      ))}
-                    </div>
-
-                    {/* Stack — inline, no boxes */}
-                    <p className="text-[12px] mb-3" style={{ color: "var(--text-3)", fontFamily: "var(--font-mono)" }}>
-                      {e.stack.join(" · ")}
-                    </p>
-
-                    <button
-                      onClick={() => setOpen(isOpen ? null : i)}
-                      className="inline-flex items-center gap-1.5 text-[12px] font-medium transition-opacity hover:opacity-70"
-                      style={{ color: "var(--accent)", fontFamily: "var(--font-heading)" }}
-                    >
-                      <ChevronDown
-                        size={13}
-                        style={{ transform: isOpen ? "rotate(180deg)" : "none", transition: "transform 0.3s ease" }}
-                      />
-                      {isOpen ? "Hide details" : "Show details"}
-                    </button>
-
-                    <ExpandableDetails details={e.details} open={isOpen} />
+                    {/* Expandable details — opacity+translate only, no height animation */}
+                    <AnimatePresence initial={false}>
+                      {isOpen && (
+                        <motion.div
+                          key="details"
+                          initial={{ opacity: 0, y: -8 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -8 }}
+                          transition={{ duration: 0.22, ease: "easeOut" }}
+                          className="px-5 md:px-6 pb-5"
+                          style={{ borderTop: "1px solid var(--border)" }}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <ul className="space-y-2.5 pt-4">
+                            {e.details.map((d, di) => (
+                              <li
+                                key={di}
+                                className="flex gap-3 text-[13px] leading-relaxed"
+                                style={{ color: "var(--text-2)" }}
+                              >
+                                <span
+                                  className="mt-[7px] h-1 w-1 rounded-full flex-shrink-0"
+                                  style={{ background: "var(--accent)" }}
+                                />
+                                {d}
+                              </li>
+                            ))}
+                          </ul>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
                 </motion.div>
               );
