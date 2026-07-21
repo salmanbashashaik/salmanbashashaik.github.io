@@ -1,187 +1,258 @@
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Github, Linkedin, Mail, ArrowDown } from "lucide-react";
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { ArrowUpRight, ArrowDown } from "lucide-react";
+import { EASE } from "./Section";
+import { CountUp, Magnetic } from "./fx";
 
-const BOOT_LINES = [
-  "Initializing system...",
-  "Loading experience data...",
-  "Mounting pipeline modules...",
-  "System ready. Launching...",
+const FIGURES = [
+  { to: 23, suffix: "×", label: "Ingest speedup, AAFC ETL" },
+  { to: 260, suffix: "/s", label: "Files processed per second" },
+  { to: 1000, suffix: "+", label: "Records catalogued" },
+  { to: 94.2, suffix: "%", decimals: 1, label: "Language-model accuracy" },
 ];
 
-const EASE = [0.22, 1, 0.36, 1] as const;
-
 const stagger = {
-  container: { animate: { transition: { staggerChildren: 0.09, delayChildren: 0.05 } } },
+  container: { animate: { transition: { staggerChildren: 0.1, delayChildren: 0.1 } } },
   item: {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE } },
+    initial: { opacity: 0, y: 28 },
+    animate: { opacity: 1, y: 0, transition: { duration: 0.9, ease: EASE } },
   },
 };
 
-export default function Hero() {
-  const [booting, setBooting] = useState(false);
-  const [bootLines, setBootLines] = useState<string[]>([]);
+const letter = {
+  initial: { opacity: 0, y: "0.5em", rotate: 3 },
+  animate: { opacity: 1, y: "0em", rotate: 0, transition: { duration: 0.7, ease: EASE } },
+};
 
-  const handleExplore = () => {
-    if (booting) return;
-    setBooting(true);
-    setBootLines([]);
-    BOOT_LINES.forEach((line, i) => {
-      setTimeout(() => {
-        setBootLines((prev) => [...prev, line]);
-        if (i === BOOT_LINES.length - 1) {
-          setTimeout(() => {
-            setBooting(false);
-            setBootLines([]);
-            document.getElementById("education")?.scrollIntoView({ behavior: "smooth" });
-          }, 500);
-        }
-      }, i * 380);
+const nameContainer = {
+  initial: {},
+  animate: { transition: { staggerChildren: 0.035 } },
+};
+
+/*
+ * Kinetic type: each letter rises in on load, then scatters away from the
+ * cursor like ink repelled by water, easing back when the cursor leaves.
+ */
+function Letters({ text }: { text: string }) {
+  const ref = useRef<HTMLSpanElement>(null);
+
+  const scatter = (e: React.MouseEvent) => {
+    ref.current?.querySelectorAll<HTMLElement>("[data-kinetic]").forEach((el) => {
+      const r = el.getBoundingClientRect();
+      const dx = e.clientX - (r.left + r.width / 2);
+      const dy = e.clientY - (r.top + r.height / 2);
+      const d = Math.hypot(dx, dy);
+      const radius = 150;
+      if (d < radius) {
+        const f = (1 - d / radius) ** 2;
+        el.style.transform = `translate(${-dx * f * 0.4}px, ${-dy * f * 0.4}px) rotate(${-dx * f * 0.05}deg)`;
+      } else {
+        el.style.transform = "";
+      }
     });
   };
 
+  const settle = () => {
+    ref.current
+      ?.querySelectorAll<HTMLElement>("[data-kinetic]")
+      .forEach((el) => (el.style.transform = ""));
+  };
+
   return (
-    <section id="home" className="relative min-h-screen flex flex-col justify-center px-4 pt-[60px]">
-      {/* Single ambient blob — subtle */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden -z-10">
-        <div
-          className="animate-blob absolute rounded-full"
-          style={{
-            width: "700px", height: "700px",
-            top: "-200px", left: "-150px",
-            background: "radial-gradient(circle, var(--accent) 0%, transparent 65%)",
-            filter: "blur(120px)",
-            opacity: 0.1,
-          }}
-        />
+    <span ref={ref} className="inline-block whitespace-pre" onMouseMove={scatter} onMouseLeave={settle}>
+      {[...text].map((ch, i) => (
+        <motion.span key={i} variants={letter} className="inline-block">
+          <span
+            data-kinetic
+            className="inline-block transition-transform duration-300"
+            style={{ transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)" }}
+          >
+            {ch}
+          </span>
+        </motion.span>
+      ))}
+    </span>
+  );
+}
+
+const greeting = () => {
+  const h = new Date().getHours();
+  if (h < 5) return "Up late";
+  if (h < 12) return "Good morning";
+  if (h < 18) return "Good afternoon";
+  return "Good evening";
+};
+
+/* Perforated postage stamp — grab it, toss it, it keeps its momentum. */
+function Stamp({ constraintsRef }: { constraintsRef: React.RefObject<HTMLElement | null> }) {
+  return (
+    <motion.div
+      drag
+      dragConstraints={constraintsRef}
+      dragElastic={0.18}
+      dragMomentum
+      initial={{ opacity: 0, rotate: 8, y: 12 }}
+      animate={{ opacity: 1, rotate: 6, y: 0 }}
+      transition={{ delay: 1.4, duration: 0.8, ease: EASE }}
+      whileHover={{ scale: 1.04 }}
+      whileDrag={{ scale: 1.08, rotate: 0 }}
+      className="absolute right-[7%] top-[24%] z-10 hidden lg:block cursor-grab active:cursor-grabbing select-none"
+      style={{ touchAction: "none" }}
+    >
+      <div className="p-[7px]" style={{ background: "var(--bg-2)", border: "1.5px dashed var(--border)" }}>
+        <div className="px-6 py-7 text-center" style={{ border: "1px solid var(--border)" }}>
+          <p className="eyebrow mb-3" style={{ color: "var(--accent)" }}>
+            Par avion
+          </p>
+          <p className="font-serif text-[1.6rem] leading-none" style={{ color: "var(--text)" }}>
+            YFC → YKF
+          </p>
+          <p className="font-mono text-[9.5px] tracking-[0.18em] mt-3" style={{ color: "var(--text-3)" }}>
+            FALL 2026 · CANADA
+          </p>
+        </div>
       </div>
+      <p className="mt-2 text-center font-mono text-[10px]" style={{ color: "var(--text-3)" }}>
+        (drag me)
+      </p>
+    </motion.div>
+  );
+}
 
-      <div className="mx-auto max-w-5xl w-full md:px-4">
-        <motion.div variants={stagger.container} initial="initial" animate="animate" className="max-w-2xl">
+export default function Hero() {
+  const ref = useRef<HTMLElement>(null);
+  // content drifts up and fades slightly as the hero scrolls away
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
+  const y = useTransform(scrollYProgress, [0, 1], [0, 90]);
+  const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0.1]);
 
-          {/* Status pill */}
-          <motion.div variants={stagger.item} className="mb-8">
-            <span
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-medium"
-              style={{
-                background: "var(--accent-subtle)",
-                border: "1px solid color-mix(in srgb, var(--accent) 25%, transparent)",
-                color: "var(--accent-2)",
-                fontFamily: "var(--font-mono)",
-              }}
-            >
-              <span className="h-1.5 w-1.5 rounded-full animate-pulse-ring" style={{ background: "#4ade80" }} />
-              Incoming MMath @ University of Waterloo · Fall 2026
-            </span>
-          </motion.div>
+  return (
+    <section ref={ref} id="home" className="relative min-h-screen flex flex-col justify-between pt-[68px]">
+      <Stamp constraintsRef={ref} />
+      <motion.div
+        style={{ y, opacity }}
+        className="mx-auto max-w-[1100px] w-full px-6 md:px-10 flex-1 flex flex-col justify-center py-16"
+      >
+        <motion.div variants={stagger.container} initial="initial" animate="animate">
+          {/* Eyebrow */}
+          <motion.p variants={stagger.item} className="eyebrow mb-8 md:mb-10">
+            {greeting()} — Data Engineering · AI / ML · NLP · Fredericton, Canada
+          </motion.p>
 
           {/* Name */}
           <motion.h1
-            variants={stagger.item}
-            className="mb-4 leading-[1.05] tracking-[-0.035em]"
-            style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "clamp(2.6rem,7.5vw,5rem)", color: "var(--text)" }}
+            variants={nameContainer}
+            className="display mb-8 md:mb-10"
+            style={{ fontSize: "clamp(3.25rem, 11vw, 8rem)" }}
           >
-            Shaik Salman Basha
+            <Letters text="Shaik Salman" />
+            <br />
+            <em className="relative inline-block" style={{ color: "var(--accent)" }}>
+              <Letters text="Basha" />
+              {/* hand-drawn underline, stroked in after the name lands */}
+              <motion.svg
+                viewBox="0 0 300 20"
+                fill="none"
+                aria-hidden
+                className="absolute left-0 -bottom-[0.06em] w-full"
+                preserveAspectRatio="none"
+                style={{ height: "0.14em" }}
+              >
+                <motion.path
+                  d="M6 14 C 70 7, 160 4, 294 10"
+                  stroke="var(--accent)"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                  initial={{ pathLength: 0, opacity: 0 }}
+                  animate={{ pathLength: 1, opacity: 0.7 }}
+                  transition={{ delay: 1.2, duration: 0.9, ease: EASE }}
+                />
+              </motion.svg>
+            </em>
           </motion.h1>
 
-          {/* Role */}
-          <motion.p
-            variants={stagger.item}
-            className="text-[clamp(0.95rem,2vw,1.15rem)] font-medium mb-5 tracking-[-0.01em]"
-            style={{ color: "var(--text-2)", fontFamily: "var(--font-heading)" }}
-          >
-            Data Engineer · AI / ML · NLP
-          </motion.p>
+          {/* Status */}
+          <motion.div variants={stagger.item} className="flex items-center gap-3 mb-6">
+            <span
+              className="dot-ping h-1.5 w-1.5 rounded-full shrink-0"
+              style={{ background: "var(--accent)" }}
+            />
+            <p className="font-mono text-[12px] tracking-[0.06em]" style={{ color: "var(--text-2)" }}>
+              Incoming MMath, University of Waterloo — Fall 2026
+            </p>
+          </motion.div>
 
           {/* Summary */}
           <motion.p
             variants={stagger.item}
-            className="text-[15px] leading-[1.8] max-w-lg mb-8"
+            className="max-w-[34rem] text-[15px] leading-[1.8] mb-10"
             style={{ color: "var(--text-2)" }}
           >
-            CS Honours + Math Minor from UNB. Heading to{" "}
-            <span style={{ color: "var(--text)" }} className="font-medium">Waterloo for my MMath</span>{" "}
-            in Fall 2026. 16 months co-op building data pipelines, ML systems, and NLP tools at scale.
+            CS Honours and Math Minor from the University of New Brunswick, with sixteen
+            months of co-op spent building data pipelines, machine-learning systems, and
+            NLP tools at scale.
           </motion.p>
 
-          {/* CTAs */}
-          <motion.div variants={stagger.item} className="flex flex-wrap gap-3 mb-8">
-            <a
-              href="/resume-g.pdf"
-              download="Shaik_Salman_Basha_Resume.pdf"
-              className="px-5 py-2.5 rounded-xl text-[13px] font-semibold transition-all duration-200"
-              style={{ background: "var(--accent)", color: "#fff", fontFamily: "var(--font-heading)" }}
-              onMouseEnter={(e) => (e.currentTarget.style.boxShadow = "0 4px 20px var(--accent-glow)")}
-              onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "none")}
-            >
-              Download Resume
-            </a>
-            <button
-              onClick={handleExplore}
-              className="px-5 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-200"
-              style={{
-                border: "1px solid color-mix(in srgb, var(--accent) 35%, transparent)",
-                color: "var(--accent-2)",
-                background: "var(--accent-subtle)",
-                fontFamily: "var(--font-heading)",
-              }}
-            >
-              {booting ? "Booting..." : "Explore System →"}
-            </button>
-          </motion.div>
-
-          {/* Boot terminal */}
-          <AnimatePresence>
-            {booting && (
-              <motion.div
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
-                className="mb-6 rounded-xl p-3 space-y-1"
-                style={{ background: "color-mix(in srgb, var(--bg) 85%, transparent)", border: "1px solid var(--border)", maxWidth: "300px" }}
-              >
-                {bootLines.map((line, i) => (
-                  <motion.p key={i} initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                    className="text-[11px]" style={{ fontFamily: "var(--font-mono)", color: i === bootLines.length - 1 ? "#4ade80" : "var(--text-2)" }}>
-                    <span style={{ color: "var(--accent)" }}>&gt; </span>{line}
-                  </motion.p>
-                ))}
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Socials */}
-          <motion.div variants={stagger.item} className="flex items-center gap-2.5">
-            {[
-              { href: "https://github.com/salmanbashashaik", icon: Github, label: "GitHub" },
-              { href: "https://www.linkedin.com/in/salman-shaik-798727225", icon: Linkedin, label: "LinkedIn" },
-              { href: "mailto:salmanbasha.shaik@unb.ca", icon: Mail, label: "Email" },
-            ].map(({ href, icon: Icon, label }) => (
+          {/* Actions */}
+          <motion.div variants={stagger.item} className="flex flex-wrap items-center gap-x-7 gap-y-4">
+            <Magnetic strength={0.3}>
               <a
-                key={label} href={href}
-                target={href.startsWith("http") ? "_blank" : undefined}
-                rel="noreferrer" aria-label={label}
-                className="p-2.5 rounded-xl transition-all duration-200"
-                style={{ border: "1px solid var(--border)", color: "var(--text-3)", background: "var(--surface)" }}
-                onMouseEnter={(e) => { e.currentTarget.style.borderColor = "var(--accent)"; e.currentTarget.style.color = "var(--accent)"; }}
-                onMouseLeave={(e) => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.color = "var(--text-3)"; }}
+                href="/resume-g.pdf"
+                download="Shaik_Salman_Basha_Resume.pdf"
+                className="btn-ink"
               >
-                <Icon size={16} />
+                Download résumé
+              </a>
+            </Magnetic>
+            {[
+              { label: "GitHub", href: "https://github.com/salmanbashashaik" },
+              { label: "LinkedIn", href: "https://www.linkedin.com/in/salman-shaik-798727225" },
+              { label: "Email", href: "mailto:salmanbasha.shaik@unb.ca" },
+            ].map(({ label, href }) => (
+              <a
+                key={label}
+                href={href}
+                target={href.startsWith("http") ? "_blank" : undefined}
+                rel="noreferrer"
+                className="u-link inline-flex items-center gap-1 text-[13px]"
+              >
+                {label}
+                <ArrowUpRight size={12} strokeWidth={1.75} />
               </a>
             ))}
           </motion.div>
         </motion.div>
-      </div>
+      </motion.div>
 
-      <motion.button
-        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.2 }}
-        onClick={() => document.getElementById("education")?.scrollIntoView({ behavior: "smooth" })}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-float transition-colors duration-200"
-        style={{ color: "var(--text-3)" }} aria-label="Scroll down"
+      {/* Selected figures — count up on first view */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.9, duration: 1 }}
+        className="mx-auto max-w-[1100px] w-full px-6 md:px-10 pb-10"
       >
-        <ArrowDown size={18} />
-      </motion.button>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-6">
+          {FIGURES.map((f) => (
+            <div key={f.label} className="pt-4" style={{ borderTop: "1px solid var(--border)" }}>
+              <p className="font-serif text-[1.75rem] leading-none mb-1.5" style={{ color: "var(--text)" }}>
+                <CountUp to={f.to} suffix={f.suffix} decimals={f.decimals ?? 0} />
+              </p>
+              <p className="text-[11.5px] leading-snug" style={{ color: "var(--text-3)" }}>
+                {f.label}
+              </p>
+            </div>
+          ))}
+        </div>
+        <Magnetic strength={0.4} className="mx-auto mt-10 hidden md:block w-fit">
+          <button
+            onClick={() => document.getElementById("education")?.scrollIntoView({ behavior: "smooth" })}
+            aria-label="Scroll down"
+            className="quiet-link flex"
+          >
+            <ArrowDown size={16} strokeWidth={1.5} />
+          </button>
+        </Magnetic>
+      </motion.div>
     </section>
   );
 }

@@ -1,157 +1,114 @@
-import { useRef } from "react";
-import { motion } from "framer-motion";
-import { ExternalLink, Github } from "lucide-react";
-import SectionHeader from "./SectionHeader";
+import { ArrowUpRight } from "lucide-react";
+import Section, { Reveal } from "./Section";
+import { InkBleed } from "./fx";
 
 const PROJECTS = [
   {
     name: "Science Data Inventory",
     blurb: "Centralized searchable metadata portal for multi-TB genomics research outputs.",
-    tags: ["Python", "scispaCy", "Elasticsearch", "PostgreSQL", "Docker", "CKAN"],
     badge: "AAFC · Internal",
-    icon: "🔬",
-    metrics: [{ label: "Throughput", value: "260/s" }, { label: "Speedup", value: "23×" }, { label: "Records", value: "1,000+" }],
+    metrics: "260 files/sec · 23× speedup · 1,000+ records",
+    tags: "Python · scispaCy · Elasticsearch · PostgreSQL · Docker · CKAN",
   },
   {
     name: "Language Detection ML",
     blurb: "ML pipeline classifying text into multiple languages using TF-IDF + ensemble classifiers.",
-    tags: ["Python", "scikit-learn", "TF-IDF", "NLP", "SVM", "Jupyter"],
-    badge: "Open Source",
-    icon: "🌐",
+    badge: "Open source",
+    metrics: "94.2% accuracy · 17 languages · 50k features",
+    tags: "Python · scikit-learn · TF-IDF · NLP · SVM · Jupyter",
     link: "https://github.com/salmanbashashaik/Language-Detection",
-    metrics: [{ label: "Accuracy", value: "94.2%" }, { label: "Languages", value: "17" }, { label: "Features", value: "50k" }],
   },
   {
     name: "Cancer Image Detection",
     blurb: "Transfer learning pipeline for histopathology cancer vs. non-cancer classification.",
-    tags: ["Python", "PyTorch", "Albumentations", "scikit-learn", "CNN"],
-    badge: "In Progress",
-    icon: "🧬",
+    badge: "In progress",
+    metrics: "87.1% val accuracy · ResNet50 backbone",
+    tags: "Python · PyTorch · Albumentations · scikit-learn · CNN",
     link: "https://github.com/salmanbashashaik/my-app",
-    metrics: [{ label: "Val Acc", value: "87.1%" }, { label: "Backbone", value: "ResNet50" }, { label: "Status", value: "Active" }],
   },
   {
     name: "Family Financial Tracker",
-    blurb: "Desktop expense tracker with full Agile/Scrum dev cycle — JavaFX + Apache POI.",
-    tags: ["Java", "JavaFX", "Apache POI", "JUnit", "Agile/Scrum"],
-    badge: "Course Project",
-    icon: "💰",
-    metrics: [{ label: "Sprint", value: "Agile" }, { label: "Tests", value: "JUnit" }, { label: "Export", value: "CSV/XLS" }],
+    blurb: "Desktop expense tracker built through a full Agile/Scrum development cycle.",
+    badge: "Course project",
+    metrics: "JUnit tested · CSV/XLS export",
+    tags: "Java · JavaFX · Apache POI · JUnit · Agile/Scrum",
   },
 ];
 
-function TiltCard({ children }: { children: React.ReactNode }) {
-  const ref = useRef<HTMLDivElement>(null);
-
-  const onMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const el = ref.current;
-    if (!el) return;
-    const { left, top, width, height } = el.getBoundingClientRect();
-    const x = (e.clientX - left) / width - 0.5;
-    const y = (e.clientY - top) / height - 0.5;
-    el.style.transform = `perspective(600px) rotateY(${x * 6}deg) rotateX(${-y * 6}deg) translateZ(4px)`;
-  };
-
-  const onLeave = () => {
-    if (ref.current) ref.current.style.transform = "perspective(600px) rotateY(0deg) rotateX(0deg) translateZ(0)";
-  };
-
-  return (
-    <div
-      ref={ref}
-      onMouseMove={onMove}
-      onMouseLeave={onLeave}
-      style={{ transition: "transform 0.15s ease", willChange: "transform" }}
-    >
-      {children}
-    </div>
-  );
-}
-
 export default function ProjectsSection() {
   return (
-    <section id="projects" className="py-24 px-4">
-      <div className="mx-auto max-w-5xl">
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-          <SectionHeader label="// what i've built" title="Projects" />
-        </motion.div>
-
-        <div className="grid md:grid-cols-2 gap-4">
-          {PROJECTS.map((p, i) => (
-            <motion.div
-              key={p.name}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.15 }}
-              transition={{ delay: i * 0.07, duration: 0.5 }}
-            >
-              <TiltCard>
-                <div
-                  className="surface rounded-2xl p-5 h-full grad-border"
-                  style={{ cursor: "default" }}
-                >
-                  <div className="flex items-start justify-between mb-3">
-                    <span className="text-2xl">{p.icon}</span>
-                    <span
-                      className="text-[11px] px-2 py-0.5 rounded-full font-mono"
-                      style={{ background: "var(--accent-subtle)", color: "var(--accent-2)", border: "1px solid color-mix(in srgb, var(--accent) 20%, transparent)" }}
-                    >
-                      {p.badge}
-                    </span>
-                  </div>
-
-                  <h3 className="text-[15px] font-bold mb-1.5 leading-snug" style={{ fontFamily: "var(--font-heading)", color: "var(--text)" }}>
+    <Section id="projects" index="03" title="Projects">
+      <div>
+        {PROJECTS.map((p, i) => {
+          const inner = (
+            <div className="grid grid-cols-[3rem_1fr_auto] gap-x-4 md:gap-x-6 items-baseline">
+              <span className="font-mono text-[11.5px]" style={{ color: "var(--text-3)" }}>
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1 mb-2">
+                  <h3
+                    className="display text-[1.3rem] md:text-[1.5rem] !leading-[1.15] transition-colors duration-300 group-hover:!text-[var(--accent)]"
+                  >
                     {p.name}
                   </h3>
-                  <p className="text-[13px] leading-relaxed mb-3" style={{ color: "var(--text-2)" }}>{p.blurb}</p>
+                  <span className="eyebrow" style={{ letterSpacing: "0.15em" }}>
+                    {p.badge}
+                  </span>
+                </div>
+                <p className="text-[13.5px] leading-[1.7] max-w-[34rem] mb-3" style={{ color: "var(--text-2)" }}>
+                  {p.blurb}
+                </p>
+                <p className="font-mono text-[11px] mb-1.5" style={{ color: "var(--accent)" }}>
+                  {p.metrics}
+                </p>
+                <p className="font-mono text-[11px]" style={{ color: "var(--text-3)" }}>
+                  {p.tags}
+                </p>
+              </div>
+              <span
+                className="self-start transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                style={{ color: p.link ? "var(--text-2)" : "transparent" }}
+              >
+                <ArrowUpRight size={16} strokeWidth={1.5} />
+              </span>
+            </div>
+          );
 
-                  <div className="flex gap-4 mb-3">
-                    {p.metrics.map((m) => (
-                      <div key={m.label}>
-                        <div className="text-[13px] font-bold font-mono" style={{ color: "var(--accent-2)" }}>{m.value}</div>
-                        <div className="text-[10px]" style={{ color: "var(--text-3)" }}>{m.label}</div>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="flex flex-wrap gap-1.5 mb-4">
-                    {p.tags.slice(0, 4).map((t) => (
-                      <span key={t} className="text-[11px] px-2 py-0.5 rounded-md font-mono"
-                        style={{ background: "var(--bg-2)", border: "1px solid var(--border)", color: "var(--text-2)" }}>
-                        {t}
-                      </span>
-                    ))}
-                    {p.tags.length > 4 && <span className="text-[11px] px-2 py-0.5 font-mono" style={{ color: "var(--text-3)" }}>+{p.tags.length - 4}</span>}
-                  </div>
-
+          return (
+            <Reveal key={p.name} delay={i * 0.04}>
+              <div
+                className={i > 0 ? "pt-8 mt-8" : undefined}
+                style={i > 0 ? { borderTop: "1px solid var(--border-soft)" } : undefined}
+              >
+                <InkBleed className="-mx-4 px-4 py-2 -my-2">
                   {p.link ? (
-                    <a
-                      href={p.link} target="_blank" rel="noreferrer"
-                      className="inline-flex items-center gap-1.5 text-[12px] font-medium transition-opacity hover:opacity-70"
-                      style={{ color: "var(--accent)", fontFamily: "var(--font-heading)" }}
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <Github size={13} /> View on GitHub <ExternalLink size={11} />
+                    <a href={p.link} target="_blank" rel="noreferrer" className="group block">
+                      {inner}
                     </a>
                   ) : (
-                    <span className="text-[12px]" style={{ color: "var(--text-3)", fontFamily: "var(--font-mono)" }}>
-                      Internal / not public
-                    </span>
+                    <div className="group">{inner}</div>
                   )}
-                </div>
-              </TiltCard>
-            </motion.div>
-          ))}
-        </div>
+                </InkBleed>
+              </div>
+            </Reveal>
+          );
+        })}
 
-        <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="mt-8 text-center">
-          <a href="https://www.kaggle.com/shaiksalman28/code" target="_blank" rel="noreferrer"
-            className="inline-flex items-center gap-2 text-[13px] font-medium transition-opacity hover:opacity-70"
-            style={{ color: "var(--text-2)", fontFamily: "var(--font-heading)" }}>
-            More notebooks on Kaggle <ExternalLink size={12} />
-          </a>
-        </motion.div>
+        <Reveal delay={0.1}>
+          <div className="pt-8 mt-8" style={{ borderTop: "1px solid var(--border-soft)" }}>
+            <a
+              href="https://www.kaggle.com/shaiksalman28/code"
+              target="_blank"
+              rel="noreferrer"
+              className="u-link inline-flex items-center gap-1 text-[13px]"
+            >
+              More notebooks on Kaggle
+              <ArrowUpRight size={12} strokeWidth={1.75} />
+            </a>
+          </div>
+        </Reveal>
       </div>
-    </section>
+    </Section>
   );
 }

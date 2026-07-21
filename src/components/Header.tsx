@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
-import { Sun, Moon } from "lucide-react";
+import { motion } from "framer-motion";
+import { Sun, Moon, Terminal } from "lucide-react";
 import { useTheme } from "../theme";
+import { Magnetic, Scramble } from "./fx";
 
 const NAV = [
   { id: "education", label: "Education" },
@@ -20,12 +22,10 @@ export default function Header() {
     const onScroll = () => {
       setScrolled(window.scrollY > 40);
       const ids = ["home", ...NAV.map((n) => n.id)];
-      const current = [...ids]
-        .reverse()
-        .find((id) => {
-          const el = document.getElementById(id);
-          return el && el.getBoundingClientRect().top <= 100;
-        });
+      const current = [...ids].reverse().find((id) => {
+        const el = document.getElementById(id);
+        return el && el.getBoundingClientRect().top <= 110;
+      });
       if (current) setActive(current);
     };
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -39,89 +39,89 @@ export default function Header() {
 
   return (
     <header
-      style={{
-        background: scrolled ? "color-mix(in srgb, var(--bg) 85%, transparent)" : "transparent",
-        borderBottom: scrolled ? "1px solid var(--border)" : "1px solid transparent",
-        backdropFilter: scrolled ? "blur(20px)" : "none",
-      }}
       className="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
+      style={{
+        background: scrolled ? "color-mix(in srgb, var(--bg) 88%, transparent)" : "transparent",
+        borderBottom: scrolled ? "1px solid var(--border-soft)" : "1px solid transparent",
+        backdropFilter: scrolled ? "blur(16px)" : "none",
+        WebkitBackdropFilter: scrolled ? "blur(16px)" : "none",
+      }}
     >
-      <div className="mx-auto max-w-5xl px-4 md:px-8">
-        <div className="flex h-[60px] items-center justify-between">
-          {/* Logo */}
+      <div className="mx-auto max-w-[1100px] px-6 md:px-10">
+        <div className="flex h-[68px] items-center justify-between">
+          {/* Wordmark */}
           <button
             onClick={() => scrollTo("home")}
-            className="font-heading font-bold text-[15px] tracking-tight transition-opacity hover:opacity-70"
+            className="font-serif italic text-[1.25rem] transition-opacity hover:opacity-60"
             style={{ color: "var(--text)" }}
           >
-            Salman<span style={{ color: "var(--accent)" }}>.</span>
+            Salman Basha
           </button>
 
           {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden md:flex items-center gap-7">
             {NAV.map((n) => (
               <button
                 key={n.id}
                 onClick={() => scrollTo(n.id)}
-                className="px-3 py-1.5 text-[13px] font-medium rounded-lg transition-all duration-200"
-                style={{
-                  color: active === n.id ? "var(--accent)" : "var(--text-2)",
-                  background: active === n.id ? "var(--accent-subtle)" : "transparent",
-                  fontFamily: "var(--font-heading)",
-                }}
+                className="relative font-mono text-[11px] uppercase tracking-[0.15em] transition-colors duration-250"
+                style={{ color: active === n.id ? "var(--accent)" : "var(--text-2)" }}
               >
-                {n.label}
+                <Scramble text={n.label} />
+                {active === n.id && (
+                  <motion.span
+                    layoutId="nav-ink"
+                    className="absolute -bottom-1.5 left-0 right-0 h-px"
+                    style={{ background: "var(--accent)" }}
+                    transition={{ type: "spring", stiffness: 400, damping: 35 }}
+                  />
+                )}
               </button>
             ))}
 
-            {/* Theme toggle */}
             <button
-              onClick={toggle}
-              aria-label="Toggle theme"
-              className="ml-2 p-2 rounded-lg transition-all duration-200"
-              style={{
-                color: "var(--text-2)",
-                border: "1px solid var(--border)",
-                background: "var(--surface)",
-              }}
+              onClick={() => window.dispatchEvent(new Event("open-terminal"))}
+              aria-label="Open terminal"
+              title="Terminal (⌘K)"
+              className="quiet-link p-1.5"
             >
-              {theme === "dark" ? <Sun size={14} /> : <Moon size={14} />}
+              <Terminal size={15} />
             </button>
 
-            <a
-              href="/resume-g.pdf"
-              download
-              className="ml-2 px-3.5 py-1.5 text-[13px] font-semibold rounded-lg transition-all duration-200"
-              style={{
-                background: "var(--accent)",
-                color: "#fff",
-                fontFamily: "var(--font-heading)",
-              }}
+            <button
+              onClick={(e) => toggle(e)}
+              aria-label="Toggle theme"
+              className="quiet-link p-1.5"
             >
-              Resume
-            </a>
+              {theme === "dark" ? <Sun size={15} /> : <Moon size={15} />}
+            </button>
+
+            <Magnetic strength={0.35}>
+              <a
+                href="/resume-g.pdf"
+                download="Shaik_Salman_Basha_Resume.pdf"
+                className="btn-ink !py-2 !px-4 text-[12px]"
+              >
+                Résumé
+              </a>
+            </Magnetic>
           </nav>
 
           {/* Mobile controls */}
-          <div className="md:hidden flex items-center gap-2">
-            <button
-              onClick={toggle}
-              aria-label="Toggle theme"
-              className="p-2 rounded-lg"
-              style={{ color: "var(--text-2)", border: "1px solid var(--border)" }}
-            >
-              {theme === "dark" ? <Sun size={14} /> : <Moon size={14} />}
+          <div className="md:hidden flex items-center gap-4">
+            <button onClick={(e) => toggle(e)} aria-label="Toggle theme" className="quiet-link p-1.5">
+              {theme === "dark" ? <Sun size={15} /> : <Moon size={15} />}
             </button>
             <button
               onClick={() => setMenuOpen((v) => !v)}
               aria-label="Toggle menu"
-              className="p-2 rounded-lg"
-              style={{ color: "var(--text-2)" }}
+              className="p-1.5"
+              style={{ color: "var(--text)" }}
             >
-              <div className="space-y-[5px] w-5">
+              <div className="space-y-[6px] w-6">
                 <span
                   className="block h-px bg-current transition-all duration-300 origin-center"
-                  style={{ transform: menuOpen ? "rotate(45deg) translateY(6px)" : "none" }}
+                  style={{ transform: menuOpen ? "rotate(45deg) translateY(6.5px)" : "none" }}
                 />
                 <span
                   className="block h-px bg-current transition-all duration-300"
@@ -129,7 +129,7 @@ export default function Header() {
                 />
                 <span
                   className="block h-px bg-current transition-all duration-300 origin-center"
-                  style={{ transform: menuOpen ? "rotate(-45deg) translateY(-6px)" : "none" }}
+                  style={{ transform: menuOpen ? "rotate(-45deg) translateY(-6.5px)" : "none" }}
                 />
               </div>
             </button>
@@ -140,34 +140,31 @@ export default function Header() {
       {/* Mobile menu */}
       {menuOpen && (
         <div
-          className="md:hidden border-t"
+          className="md:hidden"
           style={{
-            background: "color-mix(in srgb, var(--bg) 95%, transparent)",
-            borderColor: "var(--border)",
-            backdropFilter: "blur(20px)",
+            background: "color-mix(in srgb, var(--bg) 96%, transparent)",
+            borderTop: "1px solid var(--border-soft)",
+            backdropFilter: "blur(16px)",
+            WebkitBackdropFilter: "blur(16px)",
           }}
         >
-          <div className="mx-auto max-w-5xl px-4 py-3 flex flex-col gap-1">
+          <div className="mx-auto max-w-[1100px] px-6 py-6 flex flex-col gap-5">
             {NAV.map((n) => (
               <button
                 key={n.id}
                 onClick={() => scrollTo(n.id)}
-                className="text-left px-3 py-2.5 text-sm rounded-lg font-medium transition-colors"
-                style={{
-                  color: active === n.id ? "var(--accent)" : "var(--text-2)",
-                  fontFamily: "var(--font-heading)",
-                }}
+                className="text-left font-serif text-[1.5rem] transition-colors"
+                style={{ color: active === n.id ? "var(--accent)" : "var(--text)" }}
               >
                 {n.label}
               </button>
             ))}
             <a
               href="/resume-g.pdf"
-              download
-              className="mt-1 px-3 py-2.5 text-sm font-semibold rounded-lg text-center"
-              style={{ background: "var(--accent)", color: "#fff" }}
+              download="Shaik_Salman_Basha_Resume.pdf"
+              className="btn-ink self-start mt-2"
             >
-              Download Resume
+              Download résumé
             </a>
           </div>
         </div>

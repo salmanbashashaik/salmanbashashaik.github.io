@@ -1,94 +1,67 @@
-import { motion } from "framer-motion";
-import { Mail, Github, Linkedin, MapPin } from "lucide-react";
-import SectionHeader from "./SectionHeader";
-
-const LINKS = [
-  { label: "Email", value: "salmanbasha.shaik@unb.ca", href: "mailto:salmanbasha.shaik@unb.ca", icon: Mail },
-  { label: "LinkedIn", value: "salman-shaik-798727225", href: "https://www.linkedin.com/in/salman-shaik-798727225", icon: Linkedin },
-  { label: "GitHub", value: "salmanbashashaik", href: "https://github.com/salmanbashashaik", icon: Github },
-];
+import { ArrowUpRight } from "lucide-react";
+import Section, { Reveal } from "./Section";
+import { RotatingWord } from "./fx";
 
 export default function ContactSection() {
   return (
-    <section id="contact" className="py-24 px-4">
-      <div className="mx-auto max-w-5xl">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+    <Section id="contact" index="05" title="Contact">
+      <Reveal>
+        <p className="text-[15px] leading-[1.85] max-w-[34rem] mb-12" style={{ color: "var(--text-2)" }}>
+          I'm heading to Waterloo for my MMath in Fall 2026, and open to interesting
+          conversations about{" "}
+          <RotatingWord
+            words={["research", "data engineering", "AI / ML", "NLP", "grad school"]}
+            className="font-serif italic text-[1.05rem]"
+            style={{ color: "var(--accent)" }}
+          />{" "}
+          — now and beyond.
+        </p>
+      </Reveal>
+
+      <Reveal delay={0.05}>
+        <a
+          href="mailto:salmanbasha.shaik@unb.ca"
+          className="group block mb-12"
+          style={{ color: "var(--text)" }}
         >
-          <SectionHeader label="// get in touch" title="Contact" />
-        </motion.div>
-
-        <div className="grid md:grid-cols-2 gap-12 items-start">
-          <motion.div
-            initial={{ opacity: 0, x: -16 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          <p className="eyebrow mb-3">Write to me</p>
+          <span
+            className="display inline-block text-[clamp(1.3rem,4.5vw,2.6rem)] transition-colors duration-300 group-hover:!text-[var(--accent)]"
+            style={{
+              borderBottom: "1px solid var(--border)",
+              paddingBottom: "0.35rem",
+            }}
           >
-            <p className="text-[15px] leading-[1.75] mb-5" style={{ color: "var(--text-2)" }}>
-              I'm heading to{" "}
-              <span style={{ color: "var(--text)" }} className="font-medium">
-                Waterloo for my MMath
-              </span>{" "}
-              in Fall 2026, and open to interesting conversations about research, data engineering,
-              and AI/ML — now and beyond.
-            </p>
-            <div
-              className="inline-flex items-center gap-2 text-[13px]"
-              style={{ color: "var(--text-3)" }}
-            >
-              <MapPin size={13} />
-              New Brunswick, Canada · Open to remote
-            </div>
-          </motion.div>
+            salmanbasha.shaik@unb.ca
+          </span>
+        </a>
+      </Reveal>
 
-          <motion.div
-            initial={{ opacity: 0, x: 16 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            className="space-y-3"
-          >
-            {LINKS.map(({ label, value, href, icon: Icon }, i) => (
-              <motion.a
+      <Reveal delay={0.1}>
+        <div className="flex flex-wrap items-center justify-between gap-x-8 gap-y-4">
+          <div className="flex flex-wrap gap-x-8 gap-y-3">
+            {[
+              { label: "LinkedIn", href: "https://www.linkedin.com/in/salman-shaik-798727225" },
+              { label: "GitHub", href: "https://github.com/salmanbashashaik" },
+              { label: "Kaggle", href: "https://www.kaggle.com/shaiksalman28" },
+            ].map(({ label, href }) => (
+              <a
                 key={label}
                 href={href}
-                target={href.startsWith("http") ? "_blank" : undefined}
+                target="_blank"
                 rel="noreferrer"
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.07 }}
-                className="flex items-center gap-3.5 p-4 rounded-xl surface grad-border transition-all duration-200 group"
+                className="u-link inline-flex items-center gap-1 text-[13px]"
               >
-                <div
-                  className="p-2 rounded-lg transition-all duration-200"
-                  style={{
-                    background: "var(--accent-subtle)",
-                    border: "1px solid color-mix(in srgb, var(--accent) 20%, transparent)",
-                    color: "var(--accent)",
-                  }}
-                >
-                  <Icon size={15} />
-                </div>
-                <div>
-                  <p className="text-[11px] uppercase tracking-wider" style={{ color: "var(--text-3)", fontFamily: "var(--font-mono)" }}>
-                    {label}
-                  </p>
-                  <p
-                    className="text-[13px] font-medium font-mono transition-colors duration-200 group-hover:text-[var(--accent)]"
-                    style={{ color: "var(--text)" }}
-                  >
-                    {value}
-                  </p>
-                </div>
-              </motion.a>
+                {label}
+                <ArrowUpRight size={12} strokeWidth={1.75} />
+              </a>
             ))}
-          </motion.div>
+          </div>
+          <p className="font-mono text-[11.5px]" style={{ color: "var(--text-3)" }}>
+            New Brunswick, Canada · Open to remote
+          </p>
         </div>
-      </div>
-    </section>
+      </Reveal>
+    </Section>
   );
 }
