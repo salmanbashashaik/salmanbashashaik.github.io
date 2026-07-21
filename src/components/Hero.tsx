@@ -135,11 +135,10 @@ export default function Hero() {
         >
           <div>
             <p className="lede">
-              I build generative models that hold up where the data runs out —{" "}
-              <span style={{ color: "var(--red)" }}>
-                <RotatingWord words={PROFILE.roles} />
-              </span>
-              .
+              I build generative models that hold up where the data runs out.
+            </p>
+            <p className="lede" style={{ color: "var(--red)" }}>
+              <RotatingWord words={PROFILE.roles} />
             </p>
             <p className="mt-6 max-w-[56ch] text-[0.94rem]" style={{ color: "var(--ink-2)" }}>
               In the GenAI for Health Lab at Waterloo, leading Gut4Heart — a microbiome

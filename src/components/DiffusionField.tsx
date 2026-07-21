@@ -95,6 +95,10 @@ export default function DiffusionField({
       const step = w > 860 ? 3 : 4;
       const spread = Math.max(w, h) * 0.6;
       const next: Particle[] = [];
+      // Seed at the position the current timestep implies, not always at full
+      // noise — otherwise a resize (which re-samples) throws an already
+      // resolved wordmark back into the noise it came from.
+      const s0 = sigma(tRef.current);
 
       for (let y = 0; y < off.height; y += step) {
         for (let x = 0; x < off.width; x += step) {
@@ -104,16 +108,18 @@ export default function DiffusionField({
           const d = Math.sqrt(Math.random()) * spread;
           const nx = Math.cos(a) * d;
           const ny = Math.sin(a) * d * 0.6;
+          const weight = Math.random();
+          const local = Math.min(1, s0 * (0.72 + weight * 0.56));
           next.push({
             tx: x,
             ty: y,
             nx,
             ny,
-            x: x + nx,
-            y: y + ny,
+            x: x + nx * local,
+            y: y + ny * local,
             vx: 0,
             vy: 0,
-            w: Math.random(),
+            w: weight,
           });
         }
       }
@@ -123,6 +129,9 @@ export default function DiffusionField({
     const resize = () => {
       const rect = canvas.getBoundingClientRect();
       if (rect.width < 1 || rect.height < 1) return;
+      // Sub-pixel jitter from scrollbars and layout settling would otherwise
+      // re-sample the field continuously and it would never converge.
+      if (Math.abs(rect.width - w) < 2 && Math.abs(rect.height - h) < 2) return;
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       w = rect.width;
       h = rect.height;
@@ -133,9 +142,19 @@ export default function DiffusionField({
     };
 
     const RADIUS = 105;
-    const draw = () => {
+    let lastFrame = 0;
+    const draw = (now = 0) => {
       if (!running) return;
       raf = requestAnimationFrame(draw);
+
+      // A backgrounded tab stops delivering frames. When it wakes, the spring
+      // would resume from wherever it froze — which, if the timestep animation
+      // finished meanwhile, strands the field mid-noise forever. Detect the
+      // gap and settle straight onto the goal instead.
+      const gap = lastFrame ? now - lastFrame : 0;
+      const snap = gap > 400;
+      lastFrame = now;
+
       const s = sigma(tRef.current);
       ctx.clearRect(0, 0, w, h);
 
@@ -157,9 +176,11 @@ export default function DiffusionField({
           }
         }
 
-        if (reduced) {
+        if (reduced || snap) {
           q.x = gx;
           q.y = gy;
+          q.vx = 0;
+          q.vy = 0;
         } else {
           q.vx = (q.vx + (gx - q.x) * 0.085) * 0.83;
           q.vy = (q.vy + (gy - q.y) * 0.085) * 0.83;

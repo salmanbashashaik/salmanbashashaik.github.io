@@ -218,20 +218,25 @@ export function RotatingWord({
 
   const longest = words.reduce((a, b) => (a.length >= b.length ? a : b));
 
-  // The invisible longest word holds the line box, so the baseline matches the
-  // surrounding text; the animating words ride on top of it, absolutely placed.
+  // Block-level on purpose. Reserving the longest word's width inline makes the
+  // surrounding sentence break around a box far wider than the visible text;
+  // giving the word its own line keeps the measurement honest and the clipping
+  // exact.
   return (
-    <span className={`relative inline-block overflow-hidden align-bottom ${className ?? ""}`}>
+    <span className={`relative block overflow-hidden ${className ?? ""}`}>
       <span aria-hidden className="invisible whitespace-nowrap">
         {longest}
       </span>
-      <AnimatePresence initial={false}>
+      {/* Fading rather than rolling fully out of frame: a pure translate
+          relies on the clip being pixel-exact against the line box, and any
+          rounding there leaves a sliver of the outgoing word visible. */}
+      <AnimatePresence mode="wait" initial={false}>
         <motion.span
           key={words[i]}
-          initial={{ y: "104%" }}
-          animate={{ y: "0%" }}
-          exit={{ y: "-104%" }}
-          transition={{ duration: 0.6, ease: EASE }}
+          initial={{ y: "45%", opacity: 0 }}
+          animate={{ y: "0%", opacity: 1 }}
+          exit={{ y: "-45%", opacity: 0 }}
+          transition={{ duration: 0.32, ease: EASE }}
           className="absolute left-0 top-0 whitespace-nowrap"
         >
           {words[i]}
