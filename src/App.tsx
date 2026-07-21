@@ -1,82 +1,77 @@
 import { useEffect, useState } from "react";
 import { MotionConfig } from "framer-motion";
-import { ThemeProvider } from "./theme";
-import Header from "./components/Header";
+import { ThemeProvider } from "./lib/theme";
+import Nav from "./components/Nav";
 import Hero from "./components/Hero";
-import EducationSection from "./components/EducationSection";
-import ExperienceSection from "./components/ExperienceSection";
-import ProjectsSection from "./components/ProjectsSection";
-import SkillsSection from "./components/SkillsSection";
-import ContactSection from "./components/ContactSection";
-import InkCursor from "./components/InkCursor";
-import InkSplat from "./components/InkSplat";
-import CommandLine from "./components/CommandLine";
 import Marquee from "./components/Marquee";
-import BackToTop from "./components/BackToTop";
-import { ScrollProgress } from "./components/fx";
-
-/* Live Fredericton time, ticking each second. */
-function LocalClock() {
-  const [now, setNow] = useState(() => new Date());
-  useEffect(() => {
-    const t = setInterval(() => setNow(new Date()), 1000);
-    return () => clearInterval(t);
-  }, []);
-  const time = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "America/Moncton",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: false,
-  }).format(now);
-  return (
-    <span className="font-mono not-italic text-[11.5px] tabular-nums">{time} AT</span>
-  );
-}
+import Research from "./components/Research";
+import Projects from "./components/Projects";
+import Experience from "./components/Experience";
+import Skills from "./components/Skills";
+import Distribution from "./components/Distribution";
+import Contact from "./components/Contact";
+import Footer from "./components/Footer";
+import Cursor from "./components/Cursor";
+import CommandPalette from "./components/CommandPalette";
+import PaperMode from "./components/PaperMode";
 
 export default function App() {
+  const [paper, setPaper] = useState(false);
+
+  // The browser resolves a deep link before the display face loads and the
+  // canvases take their final height, so it lands short. Re-anchor once
+  // layout has actually settled.
+  useEffect(() => {
+    const id = window.location.hash.slice(1);
+    if (!id) return;
+    const settle = () => {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: "auto", block: "start" });
+    };
+    // Canvases and the display face each shift layout as they land, so
+    // re-anchor a few times across the first second rather than guessing
+    // a single moment when everything has settled.
+    const timers = [120, 320, 700, 1100].map((ms) => window.setTimeout(settle, ms));
+    document.fonts?.ready.then(settle).catch(() => {});
+    return () => timers.forEach(window.clearTimeout);
+  }, []);
+
+  // Paper mode is reachable from the nav, the palette, and the footer.
+  useEffect(() => {
+    const open = () => setPaper(true);
+    window.addEventListener("paper:open", open);
+    return () => window.removeEventListener("paper:open", open);
+  }, []);
+
   return (
     <ThemeProvider>
       <MotionConfig reducedMotion="user">
-        <div className="grain min-h-screen" style={{ background: "var(--bg)", color: "var(--text)" }}>
-          <ScrollProgress />
-          <InkCursor />
-          <InkSplat />
-          <CommandLine />
-          <Header />
+        <div className="substrate min-h-screen">
+          <a
+            href="#research"
+            className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[300] focus:px-3 focus:py-2"
+            style={{ background: "var(--paper)", border: "1px solid var(--rule)" }}
+          >
+            Skip to content
+          </a>
 
-          <main>
+          <Cursor />
+          <CommandPalette />
+          <PaperMode open={paper} onClose={() => setPaper(false)} />
+          <Nav />
+
+          <main className="relative z-[1]">
             <Hero />
             <Marquee />
-            <EducationSection />
-            <ExperienceSection />
-            <ProjectsSection />
-            <SkillsSection />
-            <ContactSection />
+            <Research />
+            <Projects />
+            <Experience />
+            <Skills />
+            <Distribution />
+            <Contact />
           </main>
 
-          <BackToTop />
-
-          <footer style={{ borderTop: "1px solid var(--border-soft)" }}>
-            <div className="mx-auto max-w-[1100px] px-6 md:px-10 py-10 flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2">
-              <p className="font-mono text-[11.5px]" style={{ color: "var(--text-3)" }}>
-                © {new Date().getFullYear()} Shaik Salman Basha
-              </p>
-              <p className="font-serif italic text-[13px]" style={{ color: "var(--text-3)" }}>
-                Fredericton → Waterloo · <LocalClock />
-              </p>
-              <button
-                onClick={() => window.dispatchEvent(new Event("open-terminal"))}
-                className="quiet-link font-mono text-[11.5px]"
-                style={{ color: "var(--text-3)" }}
-              >
-                ⌘K — terminal
-              </button>
-              <p className="font-mono text-[11.5px]" style={{ color: "var(--text-3)" }}>
-                Set in Instrument Serif &amp; Inter
-              </p>
-            </div>
-          </footer>
+          <Footer />
         </div>
       </MotionConfig>
     </ThemeProvider>

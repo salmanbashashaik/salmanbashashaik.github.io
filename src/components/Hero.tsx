@@ -1,258 +1,209 @@
-import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowUpRight, ArrowDown } from "lucide-react";
-import { EASE } from "./Section";
-import { CountUp, Magnetic } from "./fx";
-
-const FIGURES = [
-  { to: 23, suffix: "×", label: "Ingest speedup, AAFC ETL" },
-  { to: 260, suffix: "/s", label: "Files processed per second" },
-  { to: 1000, suffix: "+", label: "Records catalogued" },
-  { to: 94.2, suffix: "%", decimals: 1, label: "Language-model accuracy" },
-];
-
-const stagger = {
-  container: { animate: { transition: { staggerChildren: 0.1, delayChildren: 0.1 } } },
-  item: {
-    initial: { opacity: 0, y: 28 },
-    animate: { opacity: 1, y: 0, transition: { duration: 0.9, ease: EASE } },
-  },
-};
-
-const letter = {
-  initial: { opacity: 0, y: "0.5em", rotate: 3 },
-  animate: { opacity: 1, y: "0em", rotate: 0, transition: { duration: 0.7, ease: EASE } },
-};
-
-const nameContainer = {
-  initial: {},
-  animate: { transition: { staggerChildren: 0.035 } },
-};
-
-/*
- * Kinetic type: each letter rises in on load, then scatters away from the
- * cursor like ink repelled by water, easing back when the cursor leaves.
- */
-function Letters({ text }: { text: string }) {
-  const ref = useRef<HTMLSpanElement>(null);
-
-  const scatter = (e: React.MouseEvent) => {
-    ref.current?.querySelectorAll<HTMLElement>("[data-kinetic]").forEach((el) => {
-      const r = el.getBoundingClientRect();
-      const dx = e.clientX - (r.left + r.width / 2);
-      const dy = e.clientY - (r.top + r.height / 2);
-      const d = Math.hypot(dx, dy);
-      const radius = 150;
-      if (d < radius) {
-        const f = (1 - d / radius) ** 2;
-        el.style.transform = `translate(${-dx * f * 0.4}px, ${-dy * f * 0.4}px) rotate(${-dx * f * 0.05}deg)`;
-      } else {
-        el.style.transform = "";
-      }
-    });
-  };
-
-  const settle = () => {
-    ref.current
-      ?.querySelectorAll<HTMLElement>("[data-kinetic]")
-      .forEach((el) => (el.style.transform = ""));
-  };
-
-  return (
-    <span ref={ref} className="inline-block whitespace-pre" onMouseMove={scatter} onMouseLeave={settle}>
-      {[...text].map((ch, i) => (
-        <motion.span key={i} variants={letter} className="inline-block">
-          <span
-            data-kinetic
-            className="inline-block transition-transform duration-300"
-            style={{ transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)" }}
-          >
-            {ch}
-          </span>
-        </motion.span>
-      ))}
-    </span>
-  );
-}
-
-const greeting = () => {
-  const h = new Date().getHours();
-  if (h < 5) return "Up late";
-  if (h < 12) return "Good morning";
-  if (h < 18) return "Good afternoon";
-  return "Good evening";
-};
-
-/* Perforated postage stamp — grab it, toss it, it keeps its momentum. */
-function Stamp({ constraintsRef }: { constraintsRef: React.RefObject<HTMLElement | null> }) {
-  return (
-    <motion.div
-      drag
-      dragConstraints={constraintsRef}
-      dragElastic={0.18}
-      dragMomentum
-      initial={{ opacity: 0, rotate: 8, y: 12 }}
-      animate={{ opacity: 1, rotate: 6, y: 0 }}
-      transition={{ delay: 1.4, duration: 0.8, ease: EASE }}
-      whileHover={{ scale: 1.04 }}
-      whileDrag={{ scale: 1.08, rotate: 0 }}
-      className="absolute right-[7%] top-[24%] z-10 hidden lg:block cursor-grab active:cursor-grabbing select-none"
-      style={{ touchAction: "none" }}
-    >
-      <div className="p-[7px]" style={{ background: "var(--bg-2)", border: "1.5px dashed var(--border)" }}>
-        <div className="px-6 py-7 text-center" style={{ border: "1px solid var(--border)" }}>
-          <p className="eyebrow mb-3" style={{ color: "var(--accent)" }}>
-            Par avion
-          </p>
-          <p className="font-serif text-[1.6rem] leading-none" style={{ color: "var(--text)" }}>
-            YFC → YKF
-          </p>
-          <p className="font-mono text-[9.5px] tracking-[0.18em] mt-3" style={{ color: "var(--text-3)" }}>
-            FALL 2026 · CANADA
-          </p>
-        </div>
-      </div>
-      <p className="mt-2 text-center font-mono text-[10px]" style={{ color: "var(--text-3)" }}>
-        (drag me)
-      </p>
-    </motion.div>
-  );
-}
+import { useCallback, useEffect, useRef, useState } from "react";
+import { animate, motion } from "framer-motion";
+import { ArrowDown, RotateCcw } from "lucide-react";
+import { METRICS, PROFILE } from "../data/resume";
+import DiffusionField from "./DiffusionField";
+import { CountUp, Magnetic, RotatingWord } from "../lib/motion";
+import { EASE } from "../lib/anim";
 
 export default function Hero() {
-  const ref = useRef<HTMLElement>(null);
-  // content drifts up and fades slightly as the hero scrolls away
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], [0, 90]);
-  const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0.1]);
+  const tRef = useRef(1000);
+  const [t, setT] = useState(1000);
+  const [scrubbing, setScrubbing] = useState(false);
+  const anim = useRef<{ stop: () => void } | null>(null);
+
+  const denoise = useCallback((from = 1000) => {
+    anim.current?.stop();
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      tRef.current = 0;
+      setT(0);
+      return;
+    }
+    anim.current = animate(from, 0, {
+      duration: 2.9 * (from / 1000),
+      ease: EASE,
+      onUpdate: (v) => {
+        tRef.current = v;
+        setT(v);
+      },
+    });
+  }, []);
+
+  const restart = useCallback(() => {
+    anim.current?.stop();
+    tRef.current = 1000;
+    setT(1000);
+    window.setTimeout(() => denoise(1000), 280);
+  }, [denoise]);
+
+  // The page opens mid-diffusion and resolves. That first three seconds is the pitch.
+  useEffect(() => {
+    const id = window.setTimeout(() => denoise(1000), 400);
+    window.addEventListener("hero:renoise", restart);
+    return () => {
+      window.clearTimeout(id);
+      window.removeEventListener("hero:renoise", restart);
+      anim.current?.stop();
+    };
+  }, [denoise, restart]);
+
+  const scrub = (v: number) => {
+    anim.current?.stop();
+    tRef.current = 1000 - v;
+    setT(1000 - v);
+  };
 
   return (
-    <section ref={ref} id="home" className="relative min-h-screen flex flex-col justify-between pt-[68px]">
-      <Stamp constraintsRef={ref} />
-      <motion.div
-        style={{ y, opacity }}
-        className="mx-auto max-w-[1100px] w-full px-6 md:px-10 flex-1 flex flex-col justify-center py-16"
-      >
-        <motion.div variants={stagger.container} initial="initial" animate="animate">
-          {/* Eyebrow */}
-          <motion.p variants={stagger.item} className="eyebrow mb-8 md:mb-10">
-            {greeting()} — Data Engineering · AI / ML · NLP · Fredericton, Canada
-          </motion.p>
-
-          {/* Name */}
-          <motion.h1
-            variants={nameContainer}
-            className="display mb-8 md:mb-10"
-            style={{ fontSize: "clamp(3.25rem, 11vw, 8rem)" }}
-          >
-            <Letters text="Shaik Salman" />
-            <br />
-            <em className="relative inline-block" style={{ color: "var(--accent)" }}>
-              <Letters text="Basha" />
-              {/* hand-drawn underline, stroked in after the name lands */}
-              <motion.svg
-                viewBox="0 0 300 20"
-                fill="none"
-                aria-hidden
-                className="absolute left-0 -bottom-[0.06em] w-full"
-                preserveAspectRatio="none"
-                style={{ height: "0.14em" }}
-              >
-                <motion.path
-                  d="M6 14 C 70 7, 160 4, 294 10"
-                  stroke="var(--accent)"
-                  strokeWidth="4"
-                  strokeLinecap="round"
-                  initial={{ pathLength: 0, opacity: 0 }}
-                  animate={{ pathLength: 1, opacity: 0.7 }}
-                  transition={{ delay: 1.2, duration: 0.9, ease: EASE }}
-                />
-              </motion.svg>
-            </em>
-          </motion.h1>
-
-          {/* Status */}
-          <motion.div variants={stagger.item} className="flex items-center gap-3 mb-6">
+    <section
+      id="top"
+      className="relative min-h-[100svh] flex flex-col justify-center pt-28 pb-20"
+    >
+      <div className="mx-auto w-full max-w-[1120px] px-6 md:px-10">
+        {/* Status */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: EASE }}
+          className="flex flex-wrap items-center gap-x-6 gap-y-2 mb-9"
+        >
+          <span className="eyebrow inline-flex items-center gap-2.5">
             <span
-              className="dot-ping h-1.5 w-1.5 rounded-full shrink-0"
-              style={{ background: "var(--accent)" }}
+              className="ping inline-block h-[5px] w-[5px] rounded-full"
+              style={{ background: "var(--red)" }}
             />
-            <p className="font-mono text-[12px] tracking-[0.06em]" style={{ color: "var(--text-2)" }}>
-              Incoming MMath, University of Waterloo — Fall 2026
-            </p>
-          </motion.div>
-
-          {/* Summary */}
-          <motion.p
-            variants={stagger.item}
-            className="max-w-[34rem] text-[15px] leading-[1.8] mb-10"
-            style={{ color: "var(--text-2)" }}
-          >
-            CS Honours and Math Minor from the University of New Brunswick, with sixteen
-            months of co-op spent building data pipelines, machine-learning systems, and
-            NLP tools at scale.
-          </motion.p>
-
-          {/* Actions */}
-          <motion.div variants={stagger.item} className="flex flex-wrap items-center gap-x-7 gap-y-4">
-            <Magnetic strength={0.3}>
-              <a
-                href="/resume-g.pdf"
-                download="Shaik_Salman_Basha_Resume.pdf"
-                className="btn-ink"
-              >
-                Download résumé
-              </a>
-            </Magnetic>
-            {[
-              { label: "GitHub", href: "https://github.com/salmanbashashaik" },
-              { label: "LinkedIn", href: "https://www.linkedin.com/in/salman-shaik-798727225" },
-              { label: "Email", href: "mailto:salmanbasha.shaik@unb.ca" },
-            ].map(({ label, href }) => (
-              <a
-                key={label}
-                href={href}
-                target={href.startsWith("http") ? "_blank" : undefined}
-                rel="noreferrer"
-                className="u-link inline-flex items-center gap-1 text-[13px]"
-              >
-                {label}
-                <ArrowUpRight size={12} strokeWidth={1.75} />
-              </a>
-            ))}
-          </motion.div>
+            Incoming MMath · University of Waterloo
+          </span>
+          <span className="eyebrow hidden sm:inline">{PROFILE.locations}</span>
         </motion.div>
-      </motion.div>
 
-      {/* Selected figures — count up on first view */}
-      <motion.div
+        {/* Wordmark, sampled out of noise */}
+        <h1 className="sr-only">
+          {PROFILE.name} — machine learning researcher working on generative AI for health.
+        </h1>
+        <DiffusionField
+          text="Salman Basha"
+          tRef={tRef}
+          className="h-[24vw] min-h-[124px] max-h-[218px]"
+        />
+
+        {/* Timestep scrubber */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.9, delay: 0.7 }}
+          className="mt-3 max-w-[540px]"
+        >
+          <div className="flex items-center gap-4">
+            <span
+              className="mono text-[10.5px] tabular-nums whitespace-nowrap transition-colors"
+              style={{ color: scrubbing ? "var(--red)" : "var(--ink-3)" }}
+            >
+              t={String(Math.round(t)).padStart(4, "0")}
+            </span>
+            <input
+              type="range"
+              min={0}
+              max={1000}
+              value={1000 - t}
+              onChange={(e) => scrub(Number(e.target.value))}
+              onPointerDown={() => setScrubbing(true)}
+              onPointerUp={() => setScrubbing(false)}
+              onBlur={() => setScrubbing(false)}
+              aria-label="Diffusion timestep — drag to add noise back to the wordmark"
+              className="scrub flex-1"
+            />
+            <button
+              onClick={restart}
+              className="quiet p-1"
+              title="Re-noise, then resolve"
+              aria-label="Restart the denoising process"
+            >
+              <RotateCcw size={13} />
+            </button>
+          </div>
+          <p className="meta mt-2">
+            reverse diffusion · drag to put the noise back, or push the field with your cursor
+          </p>
+        </motion.div>
+
+        {/* Positioning + metrics */}
+        <motion.div
+          initial={{ opacity: 0, y: 22 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, delay: 1, ease: EASE }}
+          className="mt-14 grid lg:grid-cols-[1.12fr_0.88fr] gap-12 lg:gap-20 items-start"
+        >
+          <div>
+            <p className="lede">
+              I build generative models that hold up where the data runs out —{" "}
+              <span style={{ color: "var(--red)" }}>
+                <RotatingWord words={PROFILE.roles} />
+              </span>
+              .
+            </p>
+            <p className="mt-6 max-w-[56ch] text-[0.94rem]" style={{ color: "var(--ink-2)" }}>
+              In the GenAI for Health Lab at Waterloo, leading Gut4Heart — a microbiome
+              foundation model whose pretraining prior is a biological knowledge graph.
+              Before that, an honours thesis synthesizing pediatric brain MRI from a
+              handful of examples, accepted at Canadian AI 2026.
+            </p>
+
+            <div className="mt-9 flex flex-wrap items-center gap-4">
+              <Magnetic strength={0.3}>
+                <a href="#research" className="btn">
+                  Read the research
+                </a>
+              </Magnetic>
+              <a
+                href={PROFILE.resumePath}
+                download="Shaik_Salman_Basha_CV.pdf"
+                className="mono text-[11px] uppercase tracking-[0.14em] quiet"
+              >
+                Curriculum vitae ↓
+              </a>
+              <button
+                onClick={() => window.dispatchEvent(new Event("palette:open"))}
+                className="mono text-[11px] uppercase tracking-[0.14em] quiet"
+              >
+                ⌘K
+              </button>
+            </div>
+          </div>
+
+          <dl className="grid grid-cols-2 gap-x-8 gap-y-8">
+            {METRICS.map((m) => (
+              <div key={m.label}>
+                <dt className="serif text-[1.9rem] leading-none tabular-nums">
+                  <CountUp
+                    to={m.value}
+                    decimals={m.decimals}
+                    prefix={m.prefix}
+                    suffix={m.suffix}
+                  />
+                </dt>
+                <dd className="meta mt-2.5 leading-snug">{m.label}</dd>
+              </div>
+            ))}
+          </dl>
+        </motion.div>
+      </div>
+
+      <motion.a
+        href="#research"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 0.9, duration: 1 }}
-        className="mx-auto max-w-[1100px] w-full px-6 md:px-10 pb-10"
+        transition={{ delay: 1.7, duration: 1 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 quiet"
+        aria-label="Scroll to research"
       >
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-6">
-          {FIGURES.map((f) => (
-            <div key={f.label} className="pt-4" style={{ borderTop: "1px solid var(--border)" }}>
-              <p className="font-serif text-[1.75rem] leading-none mb-1.5" style={{ color: "var(--text)" }}>
-                <CountUp to={f.to} suffix={f.suffix} decimals={f.decimals ?? 0} />
-              </p>
-              <p className="text-[11.5px] leading-snug" style={{ color: "var(--text-3)" }}>
-                {f.label}
-              </p>
-            </div>
-          ))}
-        </div>
-        <Magnetic strength={0.4} className="mx-auto mt-10 hidden md:block w-fit">
-          <button
-            onClick={() => document.getElementById("education")?.scrollIntoView({ behavior: "smooth" })}
-            aria-label="Scroll down"
-            className="quiet-link flex"
-          >
-            <ArrowDown size={16} strokeWidth={1.5} />
-          </button>
-        </Magnetic>
-      </motion.div>
+        <motion.span
+          animate={{ y: [0, 6, 0] }}
+          transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+          className="block"
+        >
+          <ArrowDown size={15} />
+        </motion.span>
+      </motion.a>
     </section>
   );
 }
