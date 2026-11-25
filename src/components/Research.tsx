@@ -1,8 +1,6 @@
 import { PUBLICATIONS, RESEARCH } from "../data/resume";
 import Section from "./Section";
 import { Bloom, MaskLines, Reveal } from "../lib/motion";
-import KnowledgeCascade from "./viz/KnowledgeCascade";
-import TransferMatrix from "./viz/TransferMatrix";
 
 export default function Research() {
   return (
@@ -39,7 +37,7 @@ export default function Research() {
 
       <div className="mt-14 space-y-14">
         {RESEARCH.map((role, i) => {
-          const lead = i === 0;
+          const lead = i === 0 && false;
           return (
             <Reveal key={role.title} delay={i * 0.05}>
               <Bloom as="article" className="card p-6 md:p-8">
@@ -67,7 +65,7 @@ export default function Research() {
                   {role.org}
                 </p>
 
-                <ul className="mt-6 space-y-3.5 max-w-[68ch]">
+                <details className="more mt-6"><summary>Key details</summary><ul className="mt-6 space-y-3.5 max-w-[68ch]">
                   {role.points.map((p) => (
                     <li key={p} className="flex gap-3.5 text-[0.9rem] leading-relaxed">
                       <span
@@ -78,32 +76,9 @@ export default function Research() {
                       <span style={{ color: "var(--ink-2)" }}>{p}</span>
                     </li>
                   ))}
-                </ul>
+                </ul></details>
 
-                {/* The flagship gets its instruments: where the prior comes
-                    from, and what it buys on held-out cohorts. */}
-                {lead && (
-                  <div
-                    className="mt-9 pt-8 grid lg:grid-cols-2 gap-9 lg:gap-12"
-                    style={{ borderTop: "1px solid var(--rule-soft)" }}
-                  >
-                    <KnowledgeCascade />
-                    <div className="lg:pl-10" style={{ borderLeft: "1px solid var(--rule-soft)" }}>
-                      <TransferMatrix />
-                    </div>
-                  </div>
-                )}
-
-                {lead && (
-                  <p className="annotation mt-8 text-[0.84rem] leading-relaxed max-w-[64ch]">
-                    Stated honestly: the prior buys nothing in-distribution. On a
-                    frozen in-cohort probe, graph initialization and random
-                    initialization are indistinguishable. The advantage is
-                    specific to transfer — which is also the only setting a
-                    clinical deployment would ever be in.
-                  </p>
-                )}
-              </Bloom>
+                </Bloom>
             </Reveal>
           );
         })}

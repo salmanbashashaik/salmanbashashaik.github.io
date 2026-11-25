@@ -11,9 +11,9 @@
   --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", monospace;
 
   /* Paper */
-  --paper: #f4efe4;
-  --paper-2: #ebe4d5;
-  --paper-3: #e0d8c6;
+  --paper: #f5f1e8;
+  --paper-2: #efe9db;
+  --paper-3: #e4dccb;
   --ink: #16130f;
   --ink-2: #56504a;
   --ink-3: #8d8578;
@@ -21,13 +21,13 @@
   --rule-soft: rgba(22, 19, 15, 0.07);
 
   /* Marks */
-  --red: #9c2f18;
-  --red-2: #c04a2c;
-  --cyan: #1b6a72;
-  --cyan-2: #2b8f99;
+  --red: #b85a3a;
+  --red-2: #cf7352;
+  --cyan: #5f7a5a;
+  --cyan-2: #7d977a;
   --amber: #a06a12;
 
-  --grid: rgba(22, 19, 15, 0.055);
+  --grid: rgba(22, 19, 15, 0.025);
   --shadow: 0 1px 2px rgba(22, 19, 15, 0.05), 0 8px 28px -14px rgba(22, 19, 15, 0.22);
 
   --nav-h: 66px;
@@ -117,6 +117,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 }
 
 .substrate::after {
+  display: none;
   content: "";
   position: fixed;
   inset: 0;
@@ -573,3 +574,16 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
     transition-duration: 0.01ms !important;
   }
 }
+
+/* calmer cards and rhythm */
+.card { border-radius: 20px !important; }
+.chip { border-radius: 999px !important; }
+.portrait { position: relative; }
+.portrait::before { content: ""; position: absolute; inset: 18px -14px -14px 18px; background: #ecd5c6; border-radius: 160px 160px 24px 24px; }
+.portrait img { position: relative; display: block; width: 100%; aspect-ratio: 4/5; object-fit: cover; object-position: 50% 20%; border-radius: 160px 160px 24px 24px; }
+.more { margin-top: 4px; }
+.more > summary { cursor: pointer; list-style: none; font-size: 0.85rem; color: var(--red); margin-bottom: 14px; }
+.more > summary::-webkit-details-marker { display: none; }
+.more > summary::after { content: " +"; }
+.more[open] > summary::after { content: " −"; }
+.portrait { max-width: 280px; width: 100%; }

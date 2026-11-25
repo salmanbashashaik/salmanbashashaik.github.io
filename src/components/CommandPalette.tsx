@@ -100,12 +100,12 @@ export default function CommandPalette() {
         run: () => goto("skills"),
       },
       {
-        id: "distribution",
-        label: "Distribution",
-        hint: "drag a sample out of the training data",
+        id: "beyond",
+        label: "Beyond the lab",
+        hint: "tennis, food, films, music",
         group: "Navigate",
         icon: <Waypoints size={14} />,
-        run: () => goto("distribution"),
+        run: () => goto("beyond"),
       },
       {
         id: "contact",

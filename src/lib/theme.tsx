@@ -26,7 +26,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem("mode", mode);
     document
       .querySelector('meta[name="theme-color"]')
-      ?.setAttribute("content", mode === "dark" ? "#0e0d0c" : "#f4efe4");
+      ?.setAttribute("content", mode === "dark" ? "#0e0d0c" : "#f5f1e8");
   }, [mode]);
 
   /* The new stock floods out in a circle from wherever the toggle was hit. */

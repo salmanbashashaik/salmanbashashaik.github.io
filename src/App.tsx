@@ -3,12 +3,12 @@ import { MotionConfig } from "framer-motion";
 import { ThemeProvider } from "./lib/theme";
 import Nav from "./components/Nav";
 import Hero from "./components/Hero";
-import Marquee from "./components/Marquee";
+import About from "./components/About";
+import Beyond from "./components/Beyond";
 import Research from "./components/Research";
 import Projects from "./components/Projects";
 import Experience from "./components/Experience";
 import Skills from "./components/Skills";
-import Distribution from "./components/Distribution";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 import Cursor from "./components/Cursor";
@@ -62,12 +62,12 @@ export default function App() {
 
           <main className="relative z-[1]">
             <Hero />
-            <Marquee />
+            <About />
             <Research />
             <Projects />
             <Experience />
             <Skills />
-            <Distribution />
+            <Beyond />
             <Contact />
           </main>
 

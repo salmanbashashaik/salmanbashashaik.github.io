@@ -141,10 +141,9 @@ export default function Hero() {
               <RotatingWord words={PROFILE.roles} />
             </p>
             <p className="mt-6 max-w-[56ch] text-[0.94rem]" style={{ color: "var(--ink-2)" }}>
-              In the GenAI for Health Lab at Waterloo, leading Gut4Heart — a microbiome
-              foundation model whose pretraining prior is a biological knowledge graph.
-              Before that, an honours thesis synthesizing pediatric brain MRI from a
-              handful of examples, accepted at Canadian AI 2026.
+              Co-author of DELBERT-2 and first author of Gut4Heart, a microbiome foundation
+              model whose pretraining prior is a biological knowledge graph. Heading to
+              Waterloo for an MMath in Generative AI for Health.
             </p>
 
             <div className="mt-9 flex flex-wrap items-center gap-4">

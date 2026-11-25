@@ -42,7 +42,7 @@ export default function PipelineFlow({
     let h = 0;
     let packets: Packet[] = [];
     let carry = 0;
-    const colors = { ink: "#16130f", ink3: "#8d8578", red: "#9c2f18", cyan: "#1b6a72", rule: "rgba(0,0,0,.12)" };
+    const colors = { ink: "#16130f", ink3: "#8d8578", red: "#b85a3a", cyan: "#5f7a5a", rule: "rgba(0,0,0,.12)" };
 
     const readColors = () => {
       const cs = getComputedStyle(document.documentElement);

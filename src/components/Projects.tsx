@@ -6,6 +6,8 @@ import { Bloom, Reveal } from "../lib/motion";
 import MRIVolume from "./viz/MRIVolume";
 import GlucoseSim from "./viz/GlucoseSim";
 import PipelineFlow from "./viz/PipelineFlow";
+import KnowledgeCascade from "./viz/KnowledgeCascade";
+import TransferMatrix from "./viz/TransferMatrix";
 import { POLICY_LABEL, RATE, REGIMES, type Policy } from "./viz/constants";
 
 /* ── Toggle row shared by the instruments ─────────────────── */
@@ -217,7 +219,17 @@ function PipelinePanel() {
   );
 }
 
-const PANEL: Record<Project["viz"], () => React.ReactElement> = {
+function Gut4HeartPanel() {
+  return (
+    <div className="space-y-10">
+      <KnowledgeCascade />
+      <TransferMatrix />
+    </div>
+  );
+}
+
+const PANEL: Record<NonNullable<Project["viz"]>, () => React.ReactElement> = {
+  gut4heart: Gut4HeartPanel,
   mri: MRIPanel,
   glucose: GlucosePanel,
   pipeline: PipelinePanel,
@@ -240,7 +252,7 @@ export default function Projects() {
     >
       <div className="space-y-16">
         {PROJECTS.map((p, i) => {
-          const Panel = PANEL[p.viz];
+          const Panel = p.viz ? PANEL[p.viz] : null;
           return (
             <Reveal key={p.id} delay={i * 0.05}>
               <Bloom as="article" className="card p-6 md:p-8">
@@ -258,8 +270,8 @@ export default function Projects() {
                   {p.blurb}
                 </p>
 
-                <div className="mt-8 grid lg:grid-cols-2 gap-8 lg:gap-10 items-start">
-                  <ul className="space-y-3.5">
+                <div className={`mt-8 grid gap-8 lg:gap-10 items-start ${Panel ? "lg:grid-cols-2" : ""}`}>
+                  <details className="more"><summary>Key details</summary><ul className="space-y-3.5">
                     {p.points.map((pt) => (
                       <li key={pt} className="flex gap-3.5 text-[0.88rem] leading-relaxed">
                         <span
@@ -270,14 +282,16 @@ export default function Projects() {
                         <span style={{ color: "var(--ink-2)" }}>{pt}</span>
                       </li>
                     ))}
-                  </ul>
+                  </ul></details>
 
+                  {Panel && (
                   <div
                     className="lg:pl-10"
                     style={{ borderLeft: "1px solid var(--rule-soft)" }}
                   >
                     <Panel />
                   </div>
+                  )}
                 </div>
 
                 <div className="mt-8 flex flex-wrap items-center gap-2">

@@ -25,3 +25,6 @@ dist-ssr
 
 # Internal project memory — unpublished results, not for a public repo
 gut4heart.md
+
+.wrangler
+.dev.vars

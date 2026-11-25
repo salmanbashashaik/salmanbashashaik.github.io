@@ -1,0 +1,6 @@
+{
+  "name": "salman-spotify",
+  "main": "spotify-worker.js",
+  "compatibility_date": "2025-01-01",
+  "vars": { "SPOTIFY_CLIENT_ID": "97e5e10fe638482dba4ba7166f5f143f" }
+}

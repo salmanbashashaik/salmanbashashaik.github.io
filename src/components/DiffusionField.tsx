@@ -49,7 +49,7 @@ export default function DiffusionField({
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let particles: Particle[] = [];
     const pointer = { x: -9999, y: -9999, on: false };
-    const color = { ink: "#16130f", red: "#9c2f18" };
+    const color = { ink: "#16130f", red: "#b85a3a" };
     let raf = 0;
     let w = 0;
     let h = 0;

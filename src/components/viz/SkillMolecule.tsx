@@ -46,9 +46,9 @@ export default function SkillMolecule({ className }: { className?: string }) {
       ink: "#16130f",
       ink2: "#56504a",
       ink3: "#8d8578",
-      paper: "#f4efe4",
-      red: "#9c2f18",
-      cyan: "#1b6a72",
+      paper: "#f5f1e8",
+      red: "#b85a3a",
+      cyan: "#5f7a5a",
       amber: "#a06a12",
       rule: "rgba(0,0,0,.12)",
     };

@@ -30,7 +30,7 @@ export default function Section({
       className="relative"
       style={{ borderTop: "1px solid var(--rule-soft)" }}
     >
-      <div className="relative mx-auto max-w-[1120px] px-6 md:px-10 py-20 md:py-28 grid md:grid-cols-[210px_1fr] gap-10 md:gap-16 items-start">
+      <div className="relative mx-auto max-w-[1120px] px-6 md:px-10 py-24 md:py-36 grid md:grid-cols-[210px_1fr] gap-10 md:gap-16 items-start">
         <Reveal>
           <div className="md:sticky md:top-28">
             <div className="relative">
