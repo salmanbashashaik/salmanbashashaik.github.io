@@ -94,7 +94,7 @@ export default function CommandPalette() {
       {
         id: "skills",
         label: "Toolkit",
-        hint: "the skill molecule",
+        hint: "languages, ML, infrastructure",
         group: "Navigate",
         icon: <Waypoints size={14} />,
         run: () => goto("skills"),
