@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { animate, motion } from "framer-motion";
 import { ArrowDown, RotateCcw } from "lucide-react";
-import { METRICS, PROFILE } from "../data/resume";
+import { PROFILE } from "../data/resume";
 import DiffusionField from "./DiffusionField";
-import { CountUp, Magnetic, RotatingWord } from "../lib/motion";
+import { Magnetic, RotatingWord } from "../lib/motion";
 import { EASE } from "../lib/anim";
 
 export default function Hero() {
@@ -131,7 +131,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 22 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 1, ease: EASE }}
-          className="mt-14 grid lg:grid-cols-[1.12fr_0.88fr] gap-12 lg:gap-20 items-start"
+          className="mt-14"
         >
           <div>
             <p className="lede">
@@ -168,21 +168,6 @@ export default function Hero() {
             </div>
           </div>
 
-          <dl className="grid grid-cols-2 gap-x-8 gap-y-8">
-            {METRICS.map((m) => (
-              <div key={m.label}>
-                <dt className="serif text-[1.9rem] leading-none tabular-nums">
-                  <CountUp
-                    to={m.value}
-                    decimals={m.decimals}
-                    prefix={m.prefix}
-                    suffix={m.suffix}
-                  />
-                </dt>
-                <dd className="meta mt-2.5 leading-snug">{m.label}</dd>
-              </div>
-            ))}
-          </dl>
         </motion.div>
       </div>
 
