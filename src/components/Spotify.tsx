@@ -49,9 +49,9 @@ export default function Spotify() {
     return (
       <article className="card p-6 sm:col-span-2">
         <p className="eyebrow">Music</p>
-        <h3 className="serif text-[1.25rem] mt-2">Spotify isn't connected yet</h3>
+        <h3 className="serif text-[1.25rem] mt-2">Music is taking a short break</h3>
         <p className="mt-2 text-[0.94rem]" style={{ color: "var(--ink-2)" }}>
-          This card will show what I'm listening to right now and what I play most.
+          This card shows what I'm listening to and what I play most. It will be back shortly.
         </p>
       </article>
     );

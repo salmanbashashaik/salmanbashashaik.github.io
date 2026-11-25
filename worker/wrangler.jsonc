@@ -2,5 +2,8 @@
   "name": "salman-spotify",
   "main": "spotify-worker.js",
   "compatibility_date": "2025-01-01",
-  "vars": { "SPOTIFY_CLIENT_ID": "97e5e10fe638482dba4ba7166f5f143f" }
+  "vars": { "SPOTIFY_CLIENT_ID": "97e5e10fe638482dba4ba7166f5f143f" },
+  "d1_databases": [
+    { "binding": "DB", "database_name": "salman-stats", "database_id": "82228f4b-c1a2-4b8f-8929-defe6f830df7" }
+  ]
 }

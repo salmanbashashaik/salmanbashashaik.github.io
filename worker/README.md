@@ -11,3 +11,13 @@ Cloudflare Worker holds it and exposes only a public feed of what you play.
    `SPOTIFY_CLIENT_ID`, `SPOTIFY_CLIENT_SECRET`, `SPOTIFY_REFRESH_TOKEN`.
 4. Create `.env.production` in the repo root: `VITE_SPOTIFY_API=https://<your-worker>.workers.dev`
 5. Rebuild the site. The card on the page lights up.
+
+## Visitor stats
+
+The same Worker counts visits (D1 database `salman-stats`): country, city and referrer, with no
+cookies and no IP addresses stored. Unique visitors are a daily hash, so they are counted per day.
+
+- Dashboard: `https://salman-spotify.royal-snow-f0a6.workers.dev/dashboard` (asks for your stats key)
+- Your key is in `worker/.stats-key` (git-ignored) and stored as the `STATS_KEY` secret.
+- Skip your own visits: run `localStorage.setItem("no-track", "1")` in the browser console on the site.
+- Spotify answers are cached in D1 and the Worker backs off when Spotify returns 429.
