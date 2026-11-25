@@ -71,7 +71,7 @@ export default function Hero() {
               className="ping inline-block h-[5px] w-[5px] rounded-full"
               style={{ background: "var(--red)" }}
             />
-            Incoming MMath · University of Waterloo
+            MMath · University of Waterloo
           </span>
           <span className="eyebrow hidden sm:inline">{PROFILE.locations}</span>
         </motion.div>
@@ -142,8 +142,8 @@ export default function Hero() {
             </p>
             <p className="mt-6 max-w-[56ch] text-[0.94rem]" style={{ color: "var(--ink-2)" }}>
               Co-author of DELBERT-2 and first author of Gut4Heart, a microbiome foundation
-              model whose pretraining prior is a biological knowledge graph. Heading to
-              Waterloo for an MMath in Generative AI for Health.
+              model whose pretraining prior is a biological knowledge graph. Now doing an
+              MMath in Generative AI for Health at Waterloo.
             </p>
 
             <div className="mt-9 flex flex-wrap items-center gap-4">

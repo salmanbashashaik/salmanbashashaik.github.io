@@ -4,7 +4,7 @@ import { Reveal } from "../lib/motion";
 
 export default function Research() {
   return (
-    <Section id="research" index="01" title="Research">
+    <Section id="research" title="Research">
       <Reveal>
         <p className="lede max-w-[40ch]">
           How do you make a generative model behave on data it was never shown enough of?

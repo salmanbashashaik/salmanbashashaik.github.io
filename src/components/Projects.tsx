@@ -241,7 +241,6 @@ export default function Projects() {
   return (
     <Section
       id="projects"
-      index="02"
       title="Projects"
     >
       <div className="space-y-16">

@@ -4,7 +4,7 @@ import { Reveal } from "../lib/motion";
 
 export default function About() {
   return (
-    <Section id="about" index="00" title="About">
+    <Section id="about" title="About">
       <Reveal>
         <div className="grid md:grid-cols-[260px_1fr] gap-10 md:gap-14 items-center">
           <div className="portrait">

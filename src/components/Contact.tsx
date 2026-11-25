@@ -4,7 +4,7 @@ import { PROFILE } from "../data/resume";
 import Section from "./Section";
 import { Magnetic, Reveal } from "../lib/motion";
 
-/** Fredericton wall clock, ticking. */
+/** Waterloo wall clock, ticking. */
 function Clock() {
   const [now, setNow] = useState(() => new Date());
   useEffect(() => {
@@ -12,13 +12,13 @@ function Clock() {
     return () => clearInterval(t);
   }, []);
   const time = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "America/Moncton",
+    timeZone: "America/Toronto",
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",
     hour12: false,
   }).format(now);
-  return <span className="tabular-nums">{time} AT</span>;
+  return <span className="tabular-nums">{time} ET</span>;
 }
 
 export default function Contact() {
@@ -37,7 +37,6 @@ export default function Contact() {
   return (
     <Section
       id="contact"
-      index="06"
       title="Contact"
       aside={
         <p className="annotation text-[0.85rem] leading-relaxed">
@@ -118,9 +117,7 @@ export default function Contact() {
           <div>
             <p className="eyebrow mb-2.5">Based</p>
             <p className="text-[0.88rem]" style={{ color: "var(--ink-2)" }}>
-              Fredericton, NB
-              <br />
-              moving to Waterloo, ON
+              Waterloo, ON
             </p>
           </div>
 

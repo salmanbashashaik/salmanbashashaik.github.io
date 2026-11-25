@@ -4,7 +4,7 @@ import { Reveal } from "../lib/motion";
 
 export default function Skills() {
   return (
-    <Section id="skills" index="04" title="Toolkit">
+    <Section id="skills" title="Toolkit">
       <Reveal>
         <dl className="grid sm:grid-cols-2 gap-x-10 gap-y-7">
           {SKILLS.map((c) => (

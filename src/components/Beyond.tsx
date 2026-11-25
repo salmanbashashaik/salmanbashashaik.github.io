@@ -7,7 +7,6 @@ export default function Beyond() {
   return (
     <Section
       id="beyond"
-      index="05"
       title="Beyond the lab"
       aside={<p className="annotation text-[0.85rem] leading-relaxed">{PERSONAL.intro}</p>}
     >

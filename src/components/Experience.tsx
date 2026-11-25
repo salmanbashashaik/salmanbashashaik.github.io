@@ -98,7 +98,6 @@ export default function Experience() {
   return (
     <Section
       id="experience"
-      index="03"
       title="Experience"
       aside={
         <p className="annotation text-[0.85rem] leading-relaxed">

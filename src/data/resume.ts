@@ -3,7 +3,7 @@
 export const PROFILE = {
   name: "Shaik Salman Basha",
   short: "Salman Basha",
-  locations: "Fredericton, NB / Waterloo, ON",
+  locations: "Waterloo, ON",
   phone: "(506) 897-3381",
   email: "sbashash@uwaterloo.ca",
   altEmail: "salmanbasha.shaik@unb.ca",
@@ -38,7 +38,7 @@ export const EDUCATION: Education[] = [
     place: "Waterloo, ON",
     degree: "MMath in Computer Science (Thesis)",
     dates: "09/2026 – 05/2028 (expected)",
-    status: "Admitted",
+    status: "Current",
     points: [
       "Research focus: Generative AI for Health.",
       "Supervisors: Dr. Helen Chen and Dr. Anita Layton.",
