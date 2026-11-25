@@ -3,7 +3,7 @@
 const ORIGIN = "https://salmanbashashaik.github.io";
 
 const cors = (origin) => ({
-  "Access-Control-Allow-Origin": origin === "http://localhost:5173" ? origin : ORIGIN,
+  "Access-Control-Allow-Origin": ["http://localhost:5173", "http://localhost:4173"].includes(origin) ? origin : ORIGIN,
   "Cache-Control": "public, max-age=30",
   "Content-Type": "application/json",
 });
