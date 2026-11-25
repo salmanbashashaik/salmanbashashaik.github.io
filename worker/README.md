@@ -19,5 +19,5 @@ cookies and no IP addresses stored. Unique visitors are a daily hash, so they ar
 
 - Dashboard: `https://salman-spotify.royal-snow-f0a6.workers.dev/dashboard` (asks for your stats key)
 - Your key is in `worker/.stats-key` (git-ignored) and stored as the `STATS_KEY` secret.
-- Skip your own visits: run `localStorage.setItem("no-track", "1")` in the browser console on the site.
+- Skip your own visits: open `https://salmanbashashaik.github.io/?notrack` once in each browser or device.
 - Spotify answers are cached in D1 and the Worker backs off when Spotify returns 429.
