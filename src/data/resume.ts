@@ -327,8 +327,8 @@ export const PERSONAL = {
     { label: "Reading", text: "Sometimes. I read in bursts, and then not at all for a while." },
     { label: "Gaming", text: "Mostly with my brother, which is how I stay close from far away." },
     {
-      label: "Home is Nellore",
-      text: "What I miss most is the food, especially chepala pulusu, a tangy tamarind fish curry.",
+      label: "Home: Nellore and Fredericton",
+      text: "Nellore is where I'm from, and I miss the food, especially chepala pulusu, a tangy tamarind fish curry. Fredericton is where I studied, and I miss its beautiful trails.",
     },
   ],
   movies: [

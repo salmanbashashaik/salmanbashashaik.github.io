@@ -243,12 +243,6 @@ export default function Projects() {
       id="projects"
       index="02"
       title="Projects"
-      aside={
-        <p className="annotation text-[0.85rem] leading-relaxed">
-          Each one ships with a working instrument — the result, running, rather
-          than a screenshot of it.
-        </p>
-      }
     >
       <div className="space-y-16">
         {PROJECTS.map((p, i) => {
@@ -270,8 +264,9 @@ export default function Projects() {
                   {p.blurb}
                 </p>
 
-                <div className={`mt-8 grid gap-8 lg:gap-10 items-start ${Panel ? "lg:grid-cols-2" : ""}`}>
-                  <details className="more"><summary>Key details</summary><ul className="space-y-3.5">
+                <details className="more mt-6"><summary>{Panel ? "Details and interactive demo" : "Details"}</summary>
+                <div className={`mt-2 grid gap-8 lg:gap-10 items-start ${Panel ? "lg:grid-cols-2" : ""}`}>
+                  <ul className="space-y-3.5">
                     {p.points.map((pt) => (
                       <li key={pt} className="flex gap-3.5 text-[0.88rem] leading-relaxed">
                         <span
@@ -282,7 +277,7 @@ export default function Projects() {
                         <span style={{ color: "var(--ink-2)" }}>{pt}</span>
                       </li>
                     ))}
-                  </ul></details>
+                  </ul>
 
                   {Panel && (
                   <div
@@ -293,8 +288,9 @@ export default function Projects() {
                   </div>
                   )}
                 </div>
+                </details>
 
-                <div className="mt-8 flex flex-wrap items-center gap-2">
+                <div className="mt-6 flex flex-wrap items-center gap-2">
                   {p.tags.map((t) => (
                     <span key={t} className="chip">
                       {t}
