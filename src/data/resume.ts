@@ -175,6 +175,7 @@ export const PROJECTS: Project[] = [
       "Found that RoPE encodes a sequence order that orderless fingerprint tokens do not have.",
     ],
     tags: ["ModernBERT", "DEL", "Fingerprints", "OOD evaluation", "Virtual screening"],
+    link: { label: "Read the paper on arXiv", href: "https://arxiv.org/abs/2611.00281" },
   },
   {
     id: "mri",
@@ -245,6 +246,7 @@ export const PUBLICATIONS: Publication[] = [
     title: "DELBERT-2: Pretrained Fingerprint Language Models for DEL Protein Binder Prediction",
     venue: "ICML 2026 Workshop on Foundation Models for the Life Sciences (FM4LS)",
     note: "First author",
+    href: "https://arxiv.org/abs/2611.00281",
   },
   {
     authors: "Basha, S. S., et al.",
