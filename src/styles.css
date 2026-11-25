@@ -587,3 +587,12 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 .more > summary::after { content: " +"; }
 .more[open] > summary::after { content: " −"; }
 .portrait { max-width: 280px; width: 100%; }
+
+/* equalizer bars for the music card */
+.eq { display: inline-flex; align-items: flex-end; gap: 2px; height: 14px; }
+.eq i { width: 3px; background: #d9855f; border-radius: 1px; animation: eq 1s ease-in-out infinite; }
+.eq i:nth-child(2) { animation-delay: -0.3s; }
+.eq i:nth-child(3) { animation-delay: -0.6s; }
+.eq i:nth-child(4) { animation-delay: -0.15s; }
+@keyframes eq { 0%, 100% { height: 3px; } 50% { height: 14px; } }
+@media (prefers-reduced-motion: reduce) { .eq i { animation: none; height: 8px; } }

@@ -25,6 +25,7 @@ const shape = (t) => ({
   artist: t.artists.map((a) => a.name).join(", "),
   url: t.external_urls.spotify,
   image: t.album?.images?.[1]?.url,
+  duration: t.duration_ms,
 });
 
 export default {
@@ -56,7 +57,7 @@ export default {
     let now = null;
     if (nowR.status === 200) {
       const j = await nowR.json();
-      if (j.item) now = { ...shape(j.item), playing: !!j.is_playing };
+      if (j.item) now = { ...shape(j.item), playing: !!j.is_playing, progress: j.progress_ms };
     }
     if (!now && recent[0]) now = { ...shape(recent[0].track), playing: false };
 
